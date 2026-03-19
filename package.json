@@ -1,0 +1,15 @@
+{
+  "name": "macro-ca-pampa-2",
+  "version": "1.0.0",
+  "description": "Salesforce Marketing Cloud Journey Builder Custom Activity server",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node --env-file=.env server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

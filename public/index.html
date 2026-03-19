@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Journey Builder Custom Activity</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/require.js"></script>
+    <script>
+      (function () {
+        require({ baseUrl: 'js' }, ['customActivity']);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="main-block">
+      <header>
+        <h1>Enviar WhatsApp - Apigee</h1>
+      </header>
+      <p class="description">
+        Configura los valores que Journey Builder guardara en los inArguments de la actividad.
+      </p>
+      <main id="content">
+        <form>
+          <fieldset>
+            <legend>Data Extension</legend>
+            <input
+              type="text"
+              name="dataExtension"
+              id="dataExtension"
+              placeholder="Nombre de Data Extension"
+              class="text-input"
+            />
+          </fieldset>
+          <fieldset>
+            <legend>Columna de telefono</legend>
+            <input
+              type="text"
+              name="dataExtensionPhoneNumberColumnName"
+              id="dataExtensionPhoneNumberColumnName"
+              placeholder="Nombre de columna"
+              class="text-input"
+            />
+          </fieldset>
+          <fieldset>
+            <legend>Campana</legend>
+            <input
+              type="text"
+              name="campaignName"
+              id="campaignName"
+              placeholder="Nombre de campana"
+              class="text-input"
+            />
+          </fieldset>
+          <fieldset>
+            <legend>Plantilla</legend>
+            <input
+              type="text"
+              name="templateId"
+              id="templateId"
+              placeholder="ID de plantilla"
+              class="text-input"
+            />
+          </fieldset>
+          <fieldset id="variables-fieldset">
+            <legend>Variables</legend>
+            <div class="buttons-row">
+              <button onclick="addItem('')" type="button">Agregar variable</button>
+              <button
+                hidden
+                id="button-that-removes-items"
+                onclick="removeLastItem()"
+                type="button"
+              >
+                Quitar variable
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      </main>
+    </div>
+    <script>
+      function removeLastItem() {
+        const items = document.querySelectorAll('.variable-item');
+        const lastItem = items[items.length - 1];
+
+        if (!lastItem) {
+          return;
+        }
+
+        lastItem.remove();
+
+        if (items.length <= 1) {
+          document.getElementById('button-that-removes-items').hidden = true;
+        }
+      }
+
+      function addItem(dataExtensionColumnName) {
+        const variablesFieldset = document.getElementById('variables-fieldset');
+        const numberOfItems = document.querySelectorAll('.variable-item').length;
+        const itemNumber = String(numberOfItems + 1);
+        const wrapper = document.createElement('div');
+        const label = document.createElement('span');
+        const input = document.createElement('input');
+
+        wrapper.className = 'variable-item';
+        wrapper.id = 'group-' + itemNumber;
+
+        label.textContent = 'Variable ' + itemNumber + ':';
+
+        input.type = 'text';
+        input.name = 'dataExtensionColumnName';
+        input.placeholder = 'Nombre de columna en D.E.';
+        input.value = dataExtensionColumnName;
+        input.className = 'text-input';
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(input);
+        variablesFieldset.appendChild(wrapper);
+
+        document.getElementById('button-that-removes-items').hidden = false;
+      }
+    </script>
+  </body>
+</html>

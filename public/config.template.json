@@ -1,0 +1,118 @@
+{
+  "workflowApiVersion": "1.1",
+  "metaData": {
+    "icon": "images/icon.png",
+    "iconSmall": "images/iconSmall.png",
+    "category": "custom"
+  },
+  "type": "REST",
+  "lang": {
+    "en-US": {
+      "name": "Enviar WhatsApp - Apigee",
+      "description": "Envia un mensaje de WhatsApp a un cliente, usando el servicio de Apigee.",
+      "step1Label": "Configure Activity"
+    }
+  },
+  "arguments": {
+    "execute": {
+      "inArguments": [
+        { "dataExtension": "" },
+        { "dataExtensionPhoneNumberColumnName": "" },
+        { "campaignName": "" },
+        { "templateId": "" },
+        { "phoneNumber": "" },
+        { "variables": "" }
+      ],
+      "outArguments": [
+        { "success": false }
+      ],
+      "verb": "POST",
+      "body": "",
+      "header": "",
+      "format": "json",
+      "useJwt": true,
+      "timeout": 10000,
+      "retryCount": 3,
+      "retryDelay": 10000
+    }
+  },
+  "configurationArguments": {
+    "applicationExtensionKey": "DINAMICALLY_REPLACED",
+    "save": {
+      "url": "DINAMICALLY_REPLACED",
+      "verb": "POST",
+      "useJwt": true
+    },
+    "publish": {
+      "url": "DINAMICALLY_REPLACED",
+      "verb": "POST",
+      "useJwt": true
+    },
+    "stop": {
+      "url": "DINAMICALLY_REPLACED",
+      "verb": "POST",
+      "useJwt": true
+    },
+    "validate": {
+      "url": "DINAMICALLY_REPLACED",
+      "verb": "POST",
+      "useJwt": true
+    }
+  },
+  "userInterfaces": {
+    "configModal": {
+      "height": 540,
+      "width": 600,
+      "fullscreen": false
+    }
+  },
+  "schema": {
+    "arguments": {
+      "execute": {
+        "inArguments": [
+          {
+            "dataExtension": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "dataExtensionPhoneNumberColumnName": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "campaignName": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "templateId": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "phoneNumber": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "variables": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            }
+          }
+        ],
+        "outArguments": [
+          {
+            "success": {
+              "dataType": "Boolean",
+              "direction": "out",
+              "access": "visible"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
