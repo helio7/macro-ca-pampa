@@ -8,8 +8,8 @@
   "type": "REST",
   "lang": {
     "en-US": {
-      "name": "Enviar WhatsApp - Apigee",
-      "description": "Envia un mensaje de WhatsApp a un cliente, usando el servicio de Apigee.",
+      "name": "Enviar WhatsApp - Pampa - TEST",
+      "description": "Envia un mensaje de WhatsApp a un cliente, usando la API de Pampa.",
       "step1Label": "Configure Activity"
     }
   },
