@@ -115,18 +115,10 @@ define(['postmonger'], function (Postmonger) {
 
     var dataExtension = getArgumentValue(inArguments, 'dataExtension');
     var phoneColumnName = getArgumentValue(inArguments, 'dataExtensionPhoneNumberColumnName');
-    var dniColumnName =
-      getArgumentValue(inArguments, 'dataExtensionDniColumnName') ||
-      getColumnNameFromAttribute(getArgumentValue(inArguments, 'dni'));
-    var genderColumnName =
-      getArgumentValue(inArguments, 'dataExtensionGenderColumnName') ||
-      getColumnNameFromAttribute(getArgumentValue(inArguments, 'gender'));
-    var tributarioColumnName =
-      getArgumentValue(inArguments, 'dataExtensionTributarioColumnName') ||
-      getColumnNameFromAttribute(getArgumentValue(inArguments, 'tributario'));
-    var bsuidColumnName =
-      getArgumentValue(inArguments, 'dataExtensionBsuidColumnName') ||
-      getColumnNameFromAttribute(getArgumentValue(inArguments, 'bsuid'));
+    var dniColumnName = getArgumentValue(inArguments, 'dataExtensionDniColumnName');
+    var genderColumnName = getArgumentValue(inArguments, 'dataExtensionGenderColumnName');
+    var tributarioColumnName = getArgumentValue(inArguments, 'dataExtensionTributarioColumnName');
+    var bsuidColumnName = getArgumentValue(inArguments, 'dataExtensionBsuidColumnName');
     var campaignName = getArgumentValue(inArguments, 'campaignName');
     var templateId = getArgumentValue(inArguments, 'templateId');
     var variablesValue = getArgumentValue(inArguments, 'variables');
