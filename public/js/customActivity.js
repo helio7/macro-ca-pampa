@@ -40,12 +40,28 @@ define(['postmonger'], function (Postmonger) {
     return result;
   }
 
+  function normalizeColumnName(value) {
+    return (value || '').replace(/\s+/g, '');
+  }
+
+  function setNormalizedValue(element, value) {
+    if (!element) {
+      return '';
+    }
+
+    var normalizedValue = normalizeColumnName(value);
+    element.value = normalizedValue;
+    element.classList.toggle('invalid-column-name', /\s/.test(value || ''));
+
+    return normalizedValue;
+  }
+
   function getColumnNameFromAttribute(value) {
     if (!value || typeof value !== 'string') {
       return '';
     }
 
-    return value.split('.').pop().replace('}}', '');
+    return normalizeColumnName(value.split('.').pop().replace('}}', ''));
   }
 
   function buildContactAttribute(dataExtension, columnName) {
@@ -58,8 +74,20 @@ define(['postmonger'], function (Postmonger) {
 
   function addVariableRow(value) {
     if (typeof window.addItem === 'function') {
-      window.addItem(value || '');
+      window.addItem(normalizeColumnName(value || ''));
     }
+  }
+
+  function bindColumnNameNormalization() {
+    document.addEventListener('input', function (event) {
+      var target = event.target;
+
+      if (!target.classList || !target.classList.contains('column-name-input')) {
+        return;
+      }
+
+      setNormalizedValue(target, target.value);
+    });
   }
 
   function populateForm(data) {
@@ -79,8 +107,10 @@ define(['postmonger'], function (Postmonger) {
       }
 
       if (argument.dataExtensionPhoneNumberColumnName) {
-        byId('dataExtensionPhoneNumberColumnName').value =
-          argument.dataExtensionPhoneNumberColumnName;
+        setNormalizedValue(
+          byId('dataExtensionPhoneNumberColumnName'),
+          argument.dataExtensionPhoneNumberColumnName
+        );
       }
 
       if (argument.campaignName) {
@@ -92,19 +122,19 @@ define(['postmonger'], function (Postmonger) {
       }
 
       if (argument.dni) {
-        byId('dni').value = getColumnNameFromAttribute(argument.dni);
+        setNormalizedValue(byId('dni'), getColumnNameFromAttribute(argument.dni));
       }
 
       if (argument.gender) {
-        byId('gender').value = getColumnNameFromAttribute(argument.gender);
+        setNormalizedValue(byId('gender'), getColumnNameFromAttribute(argument.gender));
       }
 
       if (argument.tributario) {
-        byId('tributario').value = getColumnNameFromAttribute(argument.tributario);
+        setNormalizedValue(byId('tributario'), getColumnNameFromAttribute(argument.tributario));
       }
 
       if (argument.bsuid) {
-        byId('bsuid').value = getColumnNameFromAttribute(argument.bsuid);
+        setNormalizedValue(byId('bsuid'), getColumnNameFromAttribute(argument.bsuid));
       }
 
       if (argument.variables && argument.variables !== 'NO_VARIABLES') {
@@ -120,13 +150,16 @@ define(['postmonger'], function (Postmonger) {
 
   function buildArguments() {
     var dataExtension = byId('dataExtension').value;
-    var phoneColumnName = byId('dataExtensionPhoneNumberColumnName').value;
+    var phoneColumnName = setNormalizedValue(
+      byId('dataExtensionPhoneNumberColumnName'),
+      byId('dataExtensionPhoneNumberColumnName').value
+    );
     var campaignName = byId('campaignName').value;
     var templateId = byId('templateId').value;
-    var dniColumnName = byId('dni').value;
-    var genderColumnName = byId('gender').value;
-    var tributarioColumnName = byId('tributario').value;
-    var bsuidColumnName = byId('bsuid').value;
+    var dniColumnName = setNormalizedValue(byId('dni'), byId('dni').value);
+    var genderColumnName = setNormalizedValue(byId('gender'), byId('gender').value);
+    var tributarioColumnName = setNormalizedValue(byId('tributario'), byId('tributario').value);
+    var bsuidColumnName = setNormalizedValue(byId('bsuid'), byId('bsuid').value);
     var phoneNumber = buildContactAttribute(dataExtension, phoneColumnName);
     var dni = buildContactAttribute(dataExtension, dniColumnName);
     var gender = buildContactAttribute(dataExtension, genderColumnName);
@@ -138,7 +171,8 @@ define(['postmonger'], function (Postmonger) {
     rows.forEach(function (row) {
       var input = row.querySelector('input');
       var variableNumber = row.id.replace('group-', '');
-      variables[variableNumber] = buildContactAttribute(dataExtension, input.value);
+      var normalizedColumnName = setNormalizedValue(input, input.value);
+      variables[variableNumber] = buildContactAttribute(dataExtension, normalizedColumnName);
     });
 
     return [
@@ -160,6 +194,7 @@ define(['postmonger'], function (Postmonger) {
   }
 
   window.onload = function () {
+    bindColumnNameNormalization();
     connection.trigger('ready');
     connection.trigger('requestTokens');
     connection.trigger('requestEndpoints');

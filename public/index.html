@@ -45,6 +45,7 @@
           </fieldset>
           <fieldset class="grouped-fieldset">
             <legend>Origen de datos</legend>
+            <p class="grouped-note">Usa nombres de columna sin espacios.</p>
             <div class="grouped-fields">
               <div class="grouped-field full-width">
                 <label for="dataExtension">Data Extension</label>
@@ -57,56 +58,71 @@
                 />
               </div>
               <div class="grouped-field">
-                <label for="dataExtensionPhoneNumberColumnName">Columna de teléfono</label>
+                <label for="dataExtensionPhoneNumberColumnName">
+                  Columna de teléfono
+                  <span class="type-hint phone-hint">Tipo: Phone(50)</span>
+                </label>
                 <input
                   type="text"
                   name="dataExtensionPhoneNumberColumnName"
                   id="dataExtensionPhoneNumberColumnName"
                   placeholder="Nombre de columna"
-                  class="text-input"
+                  class="text-input column-name-input"
                 />
               </div>
               <div class="grouped-field">
-                <label for="dni">Columna de DNI</label>
+                <label for="dni">
+                  Columna de DNI
+                  <span class="type-hint text-hint">Tipo: Text(10)</span>
+                </label>
                 <input
                   type="text"
                   name="dni"
                   id="dni"
                   placeholder="Nombre de columna"
-                  class="text-input"
+                  class="text-input column-name-input"
                   value="dni"
                 />
               </div>
               <div class="grouped-field">
-                <label for="gender">Columna de género</label>
+                <label for="gender">
+                  Columna de género
+                  <span class="type-hint text-hint">Tipo: Text(1)</span>
+                </label>
                 <input
                   type="text"
                   name="gender"
                   id="gender"
                   placeholder="Nombre de columna"
-                  class="text-input"
+                  class="text-input column-name-input"
                   value="gender"
                 />
               </div>
               <div class="grouped-field">
-                <label for="tributario">Columna de tributario</label>
+                <label for="tributario">
+                  Columna de tributario
+                  <span class="type-hint text-hint">Tipo: Text(13)</span>
+                </label>
                 <input
                   type="text"
                   name="tributario"
                   id="tributario"
                   placeholder="Nombre de columna"
-                  class="text-input"
+                  class="text-input column-name-input"
                   value="tributario"
                 />
               </div>
               <div class="grouped-field">
-                <label for="bsuid">Columna de BSUID</label>
+                <label for="bsuid">
+                  Columna de BSUID
+                  <span class="type-hint text-hint">Tipo: Text(50)</span>
+                </label>
                 <input
                   type="text"
                   name="bsuid"
                   id="bsuid"
                   placeholder="Nombre de columna"
-                  class="text-input"
+                  class="text-input column-name-input"
                   value="bsuid"
                 />
               </div>
@@ -114,6 +130,7 @@
           </fieldset>
           <fieldset id="variables-fieldset">
             <legend>Variables</legend>
+            <p class="grouped-note">Las columnas de variables también deben escribirse sin espacios.</p>
             <div class="buttons-row">
               <button onclick="addItem('')" type="button">Agregar variable</button>
               <button
@@ -162,7 +179,7 @@
         input.name = 'dataExtensionColumnName';
         input.placeholder = 'Nombre de columna en D.E.';
         input.value = dataExtensionColumnName;
-        input.className = 'text-input';
+        input.className = 'text-input column-name-input';
 
         wrapper.appendChild(label);
         wrapper.appendChild(input);
