@@ -99,6 +99,8 @@ define(['postmonger'], function (Postmonger) {
   }
 
   function populateForm(data) {
+    console.log('[customActivity] populateForm:start', data);
+
     var inArguments =
       data &&
       data.arguments &&
@@ -106,6 +108,8 @@ define(['postmonger'], function (Postmonger) {
       Array.isArray(data.arguments.execute.inArguments)
         ? data.arguments.execute.inArguments
         : [];
+
+    console.log('[customActivity] populateForm:inArguments', inArguments);
 
     activity = data || activity;
 
@@ -126,6 +130,18 @@ define(['postmonger'], function (Postmonger) {
     var campaignName = getArgumentValue(inArguments, 'campaignName');
     var templateId = getArgumentValue(inArguments, 'templateId');
     var variablesValue = getArgumentValue(inArguments, 'variables');
+
+    console.log('[customActivity] populateForm:resolvedValues', {
+      dataExtension: dataExtension,
+      phoneColumnName: phoneColumnName,
+      dniColumnName: dniColumnName,
+      genderColumnName: genderColumnName,
+      tributarioColumnName: tributarioColumnName,
+      bsuidColumnName: bsuidColumnName,
+      campaignName: campaignName,
+      templateId: templateId,
+      variablesValue: variablesValue
+    });
 
     if (dataExtension) {
       byId('dataExtension').value = dataExtension;
@@ -162,14 +178,20 @@ define(['postmonger'], function (Postmonger) {
     if (variablesValue && variablesValue !== 'NO_VARIABLES') {
       var parsedVariables = deserializeString(variablesValue);
 
+      console.log('[customActivity] populateForm:parsedVariables', parsedVariables);
+
       Object.keys(parsedVariables).forEach(function (key) {
         var value = parsedVariables[key];
         addVariableRow(getColumnNameFromAttribute(value));
       });
     }
+
+    console.log('[customActivity] populateForm:complete');
   }
 
   function buildArguments() {
+    console.log('[customActivity] buildArguments:start');
+
     var dataExtension = byId('dataExtension').value;
     var phoneColumnName = setNormalizedValue(
       byId('dataExtensionPhoneNumberColumnName'),
@@ -196,7 +218,24 @@ define(['postmonger'], function (Postmonger) {
       variables[variableNumber] = buildContactAttribute(dataExtension, normalizedColumnName);
     });
 
-    return [
+    console.log('[customActivity] buildArguments:resolvedValues', {
+      dataExtension: dataExtension,
+      phoneColumnName: phoneColumnName,
+      campaignName: campaignName,
+      templateId: templateId,
+      dniColumnName: dniColumnName,
+      genderColumnName: genderColumnName,
+      tributarioColumnName: tributarioColumnName,
+      bsuidColumnName: bsuidColumnName,
+      variables: variables,
+      phoneNumber: phoneNumber,
+      dni: dni,
+      gender: gender,
+      tributario: tributario,
+      bsuid: bsuid
+    });
+
+    var result = [
       { dataExtension: dataExtension || null },
       {
         dataExtensionPhoneNumberColumnName: phoneColumnName || null
@@ -224,6 +263,10 @@ define(['postmonger'], function (Postmonger) {
       { tributario: tributario },
       { bsuid: bsuid }
     ];
+
+    console.log('[customActivity] buildArguments:result', result);
+
+    return result;
   }
 
   window.onload = function () {
@@ -243,6 +286,7 @@ define(['postmonger'], function (Postmonger) {
     activity.arguments.execute.inArguments = buildArguments();
     activity.metaData = activity.metaData || {};
     activity.metaData.isConfigured = true;
+    console.log('[customActivity] clickedNext:updateActivity', activity);
     connection.trigger('updateActivity', activity);
   });
 });
