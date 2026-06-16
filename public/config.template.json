@@ -20,8 +20,12 @@
         { "dataExtensionPhoneNumberColumnName": "" },
         { "campaignName": "" },
         { "templateId": "" },
+        { "variables": "" },
         { "phoneNumber": "" },
-        { "variables": "" }
+        { "dni": "" },
+        { "gender": "" },
+        { "tributario": "" },
+        { "bsuid": "" }
       ],
       "outArguments": [
         { "success": false }
@@ -91,12 +95,32 @@
               "isNullable": true,
               "direction": "in"
             },
-            "phoneNumber": {
+            "variables": {
               "dataType": "Text",
               "isNullable": true,
               "direction": "in"
             },
-            "variables": {
+            "phoneNumber": {
+              "dataType": "Phone",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "dni": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "gender": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "tributario": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "bsuid": {
               "dataType": "Text",
               "isNullable": true,
               "direction": "in"

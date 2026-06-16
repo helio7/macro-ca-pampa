@@ -19,37 +19,17 @@
         <h1>Enviar WhatsApp - Apigee</h1>
       </header>
       <p class="description">
-        Configura los valores que Journey Builder guardara en los inArguments de la actividad.
+        Configura la Custom Activity.
       </p>
       <main id="content">
         <form>
           <fieldset>
-            <legend>Data Extension</legend>
-            <input
-              type="text"
-              name="dataExtension"
-              id="dataExtension"
-              placeholder="Nombre de Data Extension"
-              class="text-input"
-            />
-          </fieldset>
-          <fieldset>
-            <legend>Columna de telefono</legend>
-            <input
-              type="text"
-              name="dataExtensionPhoneNumberColumnName"
-              id="dataExtensionPhoneNumberColumnName"
-              placeholder="Nombre de columna"
-              class="text-input"
-            />
-          </fieldset>
-          <fieldset>
-            <legend>Campana</legend>
+            <legend>Campaña</legend>
             <input
               type="text"
               name="campaignName"
               id="campaignName"
-              placeholder="Nombre de campana"
+              placeholder="Nombre de campaña"
               class="text-input"
             />
           </fieldset>
@@ -62,6 +42,75 @@
               placeholder="ID de plantilla"
               class="text-input"
             />
+          </fieldset>
+          <fieldset class="grouped-fieldset">
+            <legend>Origen de datos</legend>
+            <div class="grouped-fields">
+              <div class="grouped-field full-width">
+                <label for="dataExtension">Data Extension</label>
+                <input
+                  type="text"
+                  name="dataExtension"
+                  id="dataExtension"
+                  placeholder="Nombre de Data Extension"
+                  class="text-input"
+                />
+              </div>
+              <div class="grouped-field">
+                <label for="dataExtensionPhoneNumberColumnName">Columna de teléfono</label>
+                <input
+                  type="text"
+                  name="dataExtensionPhoneNumberColumnName"
+                  id="dataExtensionPhoneNumberColumnName"
+                  placeholder="Nombre de columna"
+                  class="text-input"
+                />
+              </div>
+              <div class="grouped-field">
+                <label for="dni">Columna de DNI</label>
+                <input
+                  type="text"
+                  name="dni"
+                  id="dni"
+                  placeholder="Nombre de columna"
+                  class="text-input"
+                  value="dni"
+                />
+              </div>
+              <div class="grouped-field">
+                <label for="gender">Columna de género</label>
+                <input
+                  type="text"
+                  name="gender"
+                  id="gender"
+                  placeholder="Nombre de columna"
+                  class="text-input"
+                  value="gender"
+                />
+              </div>
+              <div class="grouped-field">
+                <label for="tributario">Columna de tributario</label>
+                <input
+                  type="text"
+                  name="tributario"
+                  id="tributario"
+                  placeholder="Nombre de columna"
+                  class="text-input"
+                  value="tributario"
+                />
+              </div>
+              <div class="grouped-field">
+                <label for="bsuid">Columna de BSUID</label>
+                <input
+                  type="text"
+                  name="bsuid"
+                  id="bsuid"
+                  placeholder="Nombre de columna"
+                  class="text-input"
+                  value="bsuid"
+                />
+              </div>
+            </div>
           </fieldset>
           <fieldset id="variables-fieldset">
             <legend>Variables</legend>
