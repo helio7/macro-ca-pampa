@@ -64,6 +64,14 @@ define(['postmonger'], function (Postmonger) {
     return normalizeColumnName(value.split('.').pop().replace('}}', ''));
   }
 
+  function getArgumentValue(inArguments, key) {
+    var match = inArguments.find(function (argument) {
+      return Object.prototype.hasOwnProperty.call(argument, key);
+    });
+
+    return match ? match[key] : '';
+  }
+
   function buildContactAttribute(dataExtension, columnName) {
     if (!dataExtension || !columnName) {
       return null;
@@ -101,51 +109,64 @@ define(['postmonger'], function (Postmonger) {
 
     activity = data || activity;
 
-    inArguments.forEach(function (argument) {
-      if (argument.dataExtension) {
-        byId('dataExtension').value = argument.dataExtension;
-      }
+    var dataExtension = getArgumentValue(inArguments, 'dataExtension');
+    var phoneColumnName = getArgumentValue(inArguments, 'dataExtensionPhoneNumberColumnName');
+    var dniColumnName =
+      getArgumentValue(inArguments, 'dataExtensionDniColumnName') ||
+      getColumnNameFromAttribute(getArgumentValue(inArguments, 'dni'));
+    var genderColumnName =
+      getArgumentValue(inArguments, 'dataExtensionGenderColumnName') ||
+      getColumnNameFromAttribute(getArgumentValue(inArguments, 'gender'));
+    var tributarioColumnName =
+      getArgumentValue(inArguments, 'dataExtensionTributarioColumnName') ||
+      getColumnNameFromAttribute(getArgumentValue(inArguments, 'tributario'));
+    var bsuidColumnName =
+      getArgumentValue(inArguments, 'dataExtensionBsuidColumnName') ||
+      getColumnNameFromAttribute(getArgumentValue(inArguments, 'bsuid'));
+    var campaignName = getArgumentValue(inArguments, 'campaignName');
+    var templateId = getArgumentValue(inArguments, 'templateId');
+    var variablesValue = getArgumentValue(inArguments, 'variables');
 
-      if (argument.dataExtensionPhoneNumberColumnName) {
-        setNormalizedValue(
-          byId('dataExtensionPhoneNumberColumnName'),
-          argument.dataExtensionPhoneNumberColumnName
-        );
-      }
+    if (dataExtension) {
+      byId('dataExtension').value = dataExtension;
+    }
 
-      if (argument.campaignName) {
-        byId('campaignName').value = argument.campaignName;
-      }
+    if (phoneColumnName) {
+      setNormalizedValue(byId('dataExtensionPhoneNumberColumnName'), phoneColumnName);
+    }
 
-      if (argument.templateId) {
-        byId('templateId').value = argument.templateId;
-      }
+    if (campaignName) {
+      byId('campaignName').value = campaignName;
+    }
 
-      if (argument.dni) {
-        setNormalizedValue(byId('dni'), getColumnNameFromAttribute(argument.dni));
-      }
+    if (templateId) {
+      byId('templateId').value = templateId;
+    }
 
-      if (argument.gender) {
-        setNormalizedValue(byId('gender'), getColumnNameFromAttribute(argument.gender));
-      }
+    if (dniColumnName) {
+      setNormalizedValue(byId('dni'), dniColumnName);
+    }
 
-      if (argument.tributario) {
-        setNormalizedValue(byId('tributario'), getColumnNameFromAttribute(argument.tributario));
-      }
+    if (genderColumnName) {
+      setNormalizedValue(byId('gender'), genderColumnName);
+    }
 
-      if (argument.bsuid) {
-        setNormalizedValue(byId('bsuid'), getColumnNameFromAttribute(argument.bsuid));
-      }
+    if (tributarioColumnName) {
+      setNormalizedValue(byId('tributario'), tributarioColumnName);
+    }
 
-      if (argument.variables && argument.variables !== 'NO_VARIABLES') {
-        var parsedVariables = deserializeString(argument.variables);
+    if (bsuidColumnName) {
+      setNormalizedValue(byId('bsuid'), bsuidColumnName);
+    }
 
-        Object.keys(parsedVariables).forEach(function (key) {
-          var value = parsedVariables[key];
-          addVariableRow(getColumnNameFromAttribute(value));
-        });
-      }
-    });
+    if (variablesValue && variablesValue !== 'NO_VARIABLES') {
+      var parsedVariables = deserializeString(variablesValue);
+
+      Object.keys(parsedVariables).forEach(function (key) {
+        var value = parsedVariables[key];
+        addVariableRow(getColumnNameFromAttribute(value));
+      });
+    }
   }
 
   function buildArguments() {
@@ -179,6 +200,18 @@ define(['postmonger'], function (Postmonger) {
       { dataExtension: dataExtension || null },
       {
         dataExtensionPhoneNumberColumnName: phoneColumnName || null
+      },
+      {
+        dataExtensionDniColumnName: dniColumnName || null
+      },
+      {
+        dataExtensionGenderColumnName: genderColumnName || null
+      },
+      {
+        dataExtensionTributarioColumnName: tributarioColumnName || null
+      },
+      {
+        dataExtensionBsuidColumnName: bsuidColumnName || null
       },
       { campaignName: campaignName || null },
       { templateId: templateId || null },
