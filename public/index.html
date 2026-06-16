@@ -1,188 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Journey Builder Custom Activity</title>
-    <link rel="stylesheet" href="css/styles.css" />
-    <script src="js/require.js"></script>
+<html>
+    <head>
+        <title>Enviar WhatsApp - Apigee</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie-edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="css/styles.css">
+        <script type="text/javascript" src="js/require.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="js/require.js"></script>
+        <script> var $jq = jQuery.noConflict(); </script>
+        <script type="text/javascript">
+            (function() {
+                var config = {
+                    baseUrl: 'js'
+                };
+                var dependencies = [
+                    'customActivity'
+                ];
+                require(config, dependencies);
+            })();
+        </script>
+    </head>
+    <body>
+        <div class="main-block">
+            <header>
+                <h1>Enviar WhatsApp - Apigee</h1>
+            </header>
+            <p class="description">
+                Configura la Custom Activity.
+            </p>
+            <main id="content">
+                <form action="/">
+                    <fieldset>
+                        <legend>Campaña</legend>
+                        <input
+                            type="text"
+                            name="campaignName"
+                            id="campaignName"
+                            placeholder="Nombre de campaña"
+                            class="text-input"
+                        />
+                    </fieldset>
+                    <fieldset>
+                        <legend>Plantilla</legend>
+                        <input
+                            type="text"
+                            name="templateId"
+                            id="templateId"
+                            placeholder="ID de plantilla"
+                            class="text-input"
+                        />
+                    </fieldset>
+                    <fieldset class="grouped-fieldset">
+                        <legend>Origen de datos</legend>
+                        <p class="grouped-note">Usa nombres de columna sin espacios.</p>
+                        <div class="grouped-fields">
+                            <div class="grouped-field full-width">
+                                <label for="dataExtension">Data Extension</label>
+                                <input
+                                    type="text"
+                                    name="dataExtension"
+                                    id="dataExtension"
+                                    placeholder="Nombre de Data Extension"
+                                    class="text-input"
+                                />
+                            </div>
+                            <div class="grouped-field">
+                                <label for="dataExtensionPhoneNumberColumnName">
+                                    Columna de teléfono
+                                    <span class="type-hint phone-hint">Tipo: Phone(50)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="dataExtensionPhoneNumberColumnName"
+                                    id="dataExtensionPhoneNumberColumnName"
+                                    placeholder="Nombre de columna"
+                                    class="text-input column-name-input"
+                                />
+                            </div>
+                            <div class="grouped-field">
+                                <label for="dni">
+                                    Columna de DNI
+                                    <span class="type-hint text-hint">Tipo: Text(10)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="dni"
+                                    id="dni"
+                                    placeholder="Nombre de columna"
+                                    class="text-input column-name-input"
+                                />
+                            </div>
+                            <div class="grouped-field">
+                                <label for="gender">
+                                    Columna de género
+                                    <span class="type-hint text-hint">Tipo: Text(1)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="gender"
+                                    id="gender"
+                                    placeholder="Nombre de columna"
+                                    class="text-input column-name-input"
+                                />
+                            </div>
+                            <div class="grouped-field">
+                                <label for="tributario">
+                                    Columna de tributario
+                                    <span class="type-hint text-hint">Tipo: Text(13)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="tributario"
+                                    id="tributario"
+                                    placeholder="Nombre de columna"
+                                    class="text-input column-name-input"
+                                />
+                            </div>
+                            <div class="grouped-field">
+                                <label for="bsuid">
+                                    Columna de BSUID
+                                    <span class="type-hint text-hint">Tipo: Text(50)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="bsuid"
+                                    id="bsuid"
+                                    placeholder="Nombre de columna"
+                                    class="text-input column-name-input"
+                                />
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset id="variables-fieldset">
+                        <legend>Variables</legend>
+                        <p class="grouped-note">Las columnas de variables también deben escribirse sin espacios.</p>
+                        <div class="buttons-row">
+                            <button onclick="addItem('')" type="button">Agregar variable</button>
+                            <button hidden id="button-that-removes-items" onclick="removeLastItem()" type="button">Quitar variable</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </main>
+        </div>
+    </body>
     <script>
-      (function () {
-        require({ baseUrl: 'js' }, ['customActivity']);
-      })();
-    </script>
-  </head>
-  <body>
-    <div class="main-block">
-      <header>
-        <h1>Enviar WhatsApp - Apigee</h1>
-      </header>
-      <p class="description">
-        Configura la Custom Activity.
-      </p>
-      <main id="content">
-        <form>
-          <fieldset>
-            <legend>CampaÃ±a</legend>
-            <input
-              type="text"
-              name="campaignName"
-              id="campaignName"
-              placeholder="Nombre de campaÃ±a"
-              class="text-input"
-            />
-          </fieldset>
-          <fieldset>
-            <legend>Plantilla</legend>
-            <input
-              type="text"
-              name="templateId"
-              id="templateId"
-              placeholder="ID de plantilla"
-              class="text-input"
-            />
-          </fieldset>
-          <fieldset class="grouped-fieldset">
-            <legend>Origen de datos</legend>
-            <p class="grouped-note">Usa nombres de columna sin espacios.</p>
-            <div class="grouped-fields">
-              <div class="grouped-field full-width">
-                <label for="dataExtension">Data Extension</label>
-                <input
-                  type="text"
-                  name="dataExtension"
-                  id="dataExtension"
-                  placeholder="Nombre de Data Extension"
-                  class="text-input"
-                />
-              </div>
-              <div class="grouped-field">
-                <label for="dataExtensionPhoneNumberColumnName">
-                  Columna de telÃ©fono
-                  <span class="type-hint phone-hint">Tipo: Phone(50)</span>
-                </label>
-                <input
-                  type="text"
-                  name="dataExtensionPhoneNumberColumnName"
-                  id="dataExtensionPhoneNumberColumnName"
-                  placeholder="Nombre de columna"
-                  class="text-input column-name-input"
-                />
-              </div>
-              <div class="grouped-field">
-                <label for="dni">
-                  Columna de DNI
-                  <span class="type-hint text-hint">Tipo: Text(10)</span>
-                </label>
-                <input
-                  type="text"
-                  name="dni"
-                  id="dni"
-                  placeholder="Nombre de columna"
-                  class="text-input column-name-input"
-                />
-              </div>
-              <div class="grouped-field">
-                <label for="gender">
-                  Columna de gÃ©nero
-                  <span class="type-hint text-hint">Tipo: Text(1)</span>
-                </label>
-                <input
-                  type="text"
-                  name="gender"
-                  id="gender"
-                  placeholder="Nombre de columna"
-                  class="text-input column-name-input"
-                />
-              </div>
-              <div class="grouped-field">
-                <label for="tributario">
-                  Columna de tributario
-                  <span class="type-hint text-hint">Tipo: Text(13)</span>
-                </label>
-                <input
-                  type="text"
-                  name="tributario"
-                  id="tributario"
-                  placeholder="Nombre de columna"
-                  class="text-input column-name-input"
-                />
-              </div>
-              <div class="grouped-field">
-                <label for="bsuid">
-                  Columna de BSUID
-                  <span class="type-hint text-hint">Tipo: Text(50)</span>
-                </label>
-                <input
-                  type="text"
-                  name="bsuid"
-                  id="bsuid"
-                  placeholder="Nombre de columna"
-                  class="text-input column-name-input"
-                />
-              </div>
-            </div>
-          </fieldset>
-          <fieldset id="variables-fieldset">
-            <legend>Variables</legend>
-            <p class="grouped-note">Las columnas de variables tambiÃ©n deben escribirse sin espacios.</p>
-            <div class="buttons-row">
-              <button onclick="addItem('')" type="button">Agregar variable</button>
-              <button
-                hidden
-                id="button-that-removes-items"
-                onclick="removeLastItem()"
-                type="button"
-              >
-                Quitar variable
-              </button>
-            </div>
-          </fieldset>
-        </form>
-      </main>
-    </div>
-    <script>
-      function removeLastItem() {
-        const items = document.querySelectorAll('.variable-item');
-        const lastItem = items[items.length - 1];
-
-        if (!lastItem) {
-          return;
+        function normalizeColumnName(value) {
+            return (value || '').replace(/\s+/g, '');
         }
 
-        lastItem.remove();
+        function markColumnNameInput(input) {
+            if (!input) {
+                return;
+            }
 
-        if (items.length <= 1) {
-          document.getElementById('button-that-removes-items').hidden = true;
+            input.value = normalizeColumnName(input.value);
+            input.classList.toggle('invalid-column-name', /\s/.test(input.value || ''));
         }
-      }
 
-      function addItem(dataExtensionColumnName) {
-        const variablesFieldset = document.getElementById('variables-fieldset');
-        const numberOfItems = document.querySelectorAll('.variable-item').length;
-        const itemNumber = String(numberOfItems + 1);
-        const wrapper = document.createElement('div');
-        const label = document.createElement('span');
-        const input = document.createElement('input');
+        document.addEventListener('input', function (event) {
+            const target = event.target;
 
-        wrapper.className = 'variable-item';
-        wrapper.id = 'group-' + itemNumber;
+            if (!target.classList || !target.classList.contains('column-name-input')) {
+                return;
+            }
 
-        label.textContent = 'Variable ' + itemNumber + ':';
+            const originalValue = target.value;
+            target.value = normalizeColumnName(originalValue);
+            target.classList.toggle('invalid-column-name', /\s/.test(originalValue || ''));
+        });
 
-        input.type = 'text';
-        input.name = 'dataExtensionColumnName';
-        input.placeholder = 'Nombre de columna en D.E.';
-        input.value = dataExtensionColumnName;
-        input.className = 'text-input column-name-input';
+        function removeLastItem() {
+            const numberOfItems = document.querySelectorAll('.variable-item').length;
 
-        wrapper.appendChild(label);
-        wrapper.appendChild(input);
-        variablesFieldset.appendChild(wrapper);
+            if (numberOfItems === 1) {
+                document.getElementById('button-that-removes-items').hidden = true;
+            }
 
-        document.getElementById('button-that-removes-items').hidden = false;
-      }
+            const groupDivToRemove = document.getElementById('group-' + String(numberOfItems));
+            if (groupDivToRemove) {
+                groupDivToRemove.remove();
+            }
+        }
+
+        function addItem(dataExtensionColumnName) {
+            const numberOfItems = document.querySelectorAll('.variable-item').length;
+
+            if (numberOfItems === 0) {
+                document.getElementById('button-that-removes-items').hidden = false;
+            }
+
+            const itemNumber = String(numberOfItems + 1);
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'variable-item';
+            groupDiv.id = 'group-' + itemNumber;
+
+            const span = document.createElement('span');
+            span.innerText = 'Variable ' + itemNumber + ':';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'dataExtensionColumnName';
+            input.placeholder = 'Nombre de columna en D.E.';
+            input.value = normalizeColumnName(dataExtensionColumnName);
+            input.className = 'text-input column-name-input';
+            input.setAttribute('required', '');
+
+            groupDiv.appendChild(span);
+            groupDiv.appendChild(input);
+
+            const variablesFieldset = document.getElementById('variables-fieldset');
+            variablesFieldset.appendChild(groupDiv);
+            markColumnNameInput(input);
+        }
     </script>
-  </body>
 </html>
