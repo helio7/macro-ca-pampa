@@ -43,6 +43,8 @@ define(['postmonger'], (Postmonger) => {
     });
 
     connection.on('initActivity', (data) => {
+        console.log('[customActivity] initActivity:rawData', data);
+
         if (data) {
             activity = data;
         }
@@ -55,6 +57,8 @@ define(['postmonger'], (Postmonger) => {
             data.arguments.execute.inArguments.length > 0
         ) ? data.arguments.execute.inArguments : [];
 
+        console.log('[customActivity] initActivity:inArguments', inArguments);
+
         const dataExtension = getArgumentValue(inArguments, 'dataExtension');
         const dataExtensionPhoneNumberColumnName = getArgumentValue(inArguments, 'dataExtensionPhoneNumberColumnName');
         const dataExtensionDniColumnName = getArgumentValue(inArguments, 'dataExtensionDniColumnName');
@@ -64,6 +68,18 @@ define(['postmonger'], (Postmonger) => {
         const campaignName = getArgumentValue(inArguments, 'campaignName');
         const templateId = getArgumentValue(inArguments, 'templateId');
         const variablesValue = getArgumentValue(inArguments, 'variables');
+
+        console.log('[customActivity] initActivity:resolvedValues', {
+            dataExtension,
+            dataExtensionPhoneNumberColumnName,
+            dataExtensionDniColumnName,
+            dataExtensionGenderColumnName,
+            dataExtensionTributarioColumnName,
+            dataExtensionBsuidColumnName,
+            campaignName,
+            templateId,
+            variablesValue
+        });
 
         if (dataExtension) document.getElementById('dataExtension').value = dataExtension;
         if (dataExtensionPhoneNumberColumnName) setNormalizedValue(document.getElementById('dataExtensionPhoneNumberColumnName'), dataExtensionPhoneNumberColumnName);
@@ -76,14 +92,19 @@ define(['postmonger'], (Postmonger) => {
 
         if (variablesValue && variablesValue !== 'NO_VARIABLES') {
             const parsedVariables = deserializeString(variablesValue);
+            console.log('[customActivity] initActivity:parsedVariables', parsedVariables);
 
             for (const parsedVariable in parsedVariables) {
                 addItem(parsedVariables[parsedVariable].split('.').pop()?.replace('}}', ''));
             }
         }
+
+        console.log('[customActivity] initActivity:complete');
     });
 
     connection.on('clickedNext', () => {
+        console.log('[customActivity] clickedNext:start');
+
         const dataExtension = document.getElementById('dataExtension').value;
         const dataExtensionPhoneNumberColumnName = setNormalizedValue(
             document.getElementById('dataExtensionPhoneNumberColumnName'),
@@ -123,6 +144,24 @@ define(['postmonger'], (Postmonger) => {
         }
         const variables = groupDivs.length ? serializeObject(variablesObject) : 'NO_VARIABLES';
 
+        console.log('[customActivity] clickedNext:resolvedValues', {
+            dataExtension,
+            dataExtensionPhoneNumberColumnName,
+            dataExtensionDniColumnName,
+            dataExtensionGenderColumnName,
+            dataExtensionTributarioColumnName,
+            dataExtensionBsuidColumnName,
+            campaignName,
+            templateId,
+            phoneNumber,
+            dni,
+            gender,
+            tributario,
+            bsuid,
+            variablesObject,
+            variables
+        });
+
         activity['arguments'] = activity['arguments'] || {};
         activity['arguments'].execute = activity['arguments'].execute || {};
         activity['arguments'].execute.inArguments = [
@@ -145,10 +184,12 @@ define(['postmonger'], (Postmonger) => {
         activity['metaData'] = activity['metaData'] || {};
         activity['metaData'].isConfigured = true;
 
+        console.log('[customActivity] clickedNext:updateActivity', activity);
         connection.trigger('updateActivity', activity);
     });
 
     connection.on('requestedTriggerEventDefinition', (eventDefinitionModel) => {
+        console.log('[customActivity] requestedTriggerEventDefinition', eventDefinitionModel);
         if (eventDefinitionModel) eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
     });
 });
