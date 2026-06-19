@@ -195,19 +195,38 @@ define(['postmonger'], (Postmonger) => {
 });
 
 function serializeObject(obj) {
-    return Object.entries(obj)
-        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join(';');
+  return Object.entries(obj)
+    .map(([key, value]) =>
+      `${key}${KEY_VALUE_SEPARATOR}${value}`
+    )
+    .join(PAIR_SEPARATOR);
 }
 
 function deserializeString(str) {
-    const result = {};
-    str.split(';').forEach(pair => {
-      const [key, ...rest] = pair.split('=');
-      if (!key) {
-        return;
-      }
-      result[key] = decodeURIComponent(rest.join('='));
-    });
+  const result = {};
+
+  if (!str) {
     return result;
+  }
+
+  str.split(PAIR_SEPARATOR).forEach(pair => {
+    const separatorIndex = pair.indexOf(KEY_VALUE_SEPARATOR);
+
+    if (separatorIndex === -1) {
+      return;
+    }
+
+    const key = pair.substring(0, separatorIndex);
+    const value = pair.substring(
+      separatorIndex + KEY_VALUE_SEPARATOR.length
+    );
+
+    if (!key) {
+      return;
+    }
+
+    result[key] = value;
+  });
+
+  return result;
 }
