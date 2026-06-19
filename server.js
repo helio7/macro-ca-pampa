@@ -8,6 +8,9 @@ const app = express();
 const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
+const salesforceJwtSecret = process.env.SALESFORCE_JWT_SECRET;
+
+const { verify } = require('jsonwebtoken');
 
 app.set('trust proxy', true);
 app.use(express.json());
@@ -81,9 +84,36 @@ app.post('/journeybuilder/save', journeyBuilderAck('save'));
 app.post('/journeybuilder/validate', journeyBuilderAck('validate'));
 app.post('/journeybuilder/publish', journeyBuilderAck('publish'));
 app.post('/journeybuilder/stop', journeyBuilderAck('stop'));
-app.post('/journeybuilder/execute', (req, res) => {
+app.post('/journeybuilder/execute', express.raw({ type: 'application/jwt' }), (req, res) => {
   logRequest('execute', req);
-  res.status(200).json({ success: true });
+
+  const jwtBody = Buffer.isBuffer(req.body) ? req.body.toString('utf8') : '';
+
+  console.log('POST /execute raw JWT body:', jwtBody);
+
+  if (!jwtBody) {
+    return res.status(400).json({ success: false, error: 'Missing JWT body' });
+  }
+
+  if (!salesforceJwtSecret) {
+    console.error('POST /execute request error: SALESFORCE_JWT_SECRET is not configured.');
+    return res.status(500).json({ success: false, error: 'Missing JWT secret' });
+  }
+
+  verify(
+    jwtBody,
+    salesforceJwtSecret,
+    { algorithms: ['HS256'], complete: false },
+    async (err, decoded) => {
+      if (err) {
+        console.error('POST /execute request error when decoding.', err);
+        return res.status(401).json({ success: false, error: 'Invalid JWT' });
+      }
+
+      console.log('POST /execute request decoded.', JSON.stringify(decoded));
+      return res.status(200).json({ success: true });
+    }
+  );
 });
 
 app.listen(port, () => {
