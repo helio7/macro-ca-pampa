@@ -194,6 +194,9 @@ define(['postmonger'], (Postmonger) => {
     });
 });
 
+const PAIR_SEPARATOR = '__SFMC_PAIR__';
+const KEY_VALUE_SEPARATOR = '__SFMC_KV__';
+
 function serializeObject(obj) {
   return Object.entries(obj)
     .map(([key, value]) =>
