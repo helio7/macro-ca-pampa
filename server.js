@@ -71,6 +71,28 @@ function journeyBuilderAck(name) {
   };
 }
 
+function formatFecha(date) {
+  const pad = (value) => String(value).padStart(2, '0');
+
+  return [
+    date.getFullYear(),
+    pad(date.getMonth() + 1),
+    pad(date.getDate())
+  ].join('-') + 'T' + [
+    pad(date.getHours()),
+    pad(date.getMinutes()),
+    pad(date.getSeconds())
+  ].join(':');
+}
+
+function buildExecuteResponse(estado, activityInstanceId) {
+  return {
+    activity_instance_id: activityInstanceId,
+    estado,
+    fecha: formatFecha(new Date())
+  };
+}
+
 app.get('/', (_req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
@@ -92,12 +114,12 @@ app.post('/journeybuilder/execute', express.raw({ type: 'application/jwt' }), (r
   console.log('POST /execute raw JWT body:', jwtBody);
 
   if (!jwtBody) {
-    return res.status(400).json({ success: false, error: 'Missing JWT body' });
+    return res.status(400).json(buildExecuteResponse('FAILED', 'ERROR_MISSING_JWT_BODY'));
   }
 
   if (!salesforceJwtSecret) {
     console.error('POST /execute request error: SALESFORCE_JWT_SECRET is not configured.');
-    return res.status(500).json({ success: false, error: 'Missing JWT secret' });
+    return res.status(500).json(buildExecuteResponse('FAILED', 'ERROR_MISSING_JWT_SECRET'));
   }
 
   verify(
@@ -107,11 +129,18 @@ app.post('/journeybuilder/execute', express.raw({ type: 'application/jwt' }), (r
     async (err, decoded) => {
       if (err) {
         console.error('POST /execute request error when decoding.', err);
-        return res.status(401).json({ success: false, error: 'Invalid JWT' });
+        return res.status(401).json(buildExecuteResponse('FAILED', 'ERROR_INVALID_JWT'));
       }
 
       console.log('POST /execute request decoded.', JSON.stringify(decoded));
-      return res.status(200).json({ success: true });
+
+      const activityInstanceId = decoded && typeof decoded === 'object' ? decoded.activityInstanceId : null;
+
+      if (!activityInstanceId || typeof activityInstanceId !== 'string') {
+        return res.status(422).json(buildExecuteResponse('FAILED', 'ERROR_MISSING_ACTIVITY_INSTANCE_ID'));
+      }
+
+      return res.status(200).json(buildExecuteResponse('COMPLETED', activityInstanceId));
     }
   );
 });
