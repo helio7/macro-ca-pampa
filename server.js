@@ -105,6 +105,7 @@ app.post('/journeybuilder/publish', journeyBuilderAck('publish'));
 app.post('/journeybuilder/stop', journeyBuilderAck('stop'));
 app.post('/journeybuilder/execute', (req, res) => {
   logRequest('execute', req);
+  console.log('POST /execute body:', req.body);
 
   const activityInstanceId = req.body && typeof req.body === 'object'
     ? req.body.activityInstanceId
