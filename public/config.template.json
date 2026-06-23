@@ -29,8 +29,7 @@
         { "dni": "" },
         { "gender": "" },
         { "tributario": "" },
-        { "bsuid": "" },
-        { "canal": "" }
+        { "bsuid": "" }
       ],
       "outArguments": [
         { "activity_instance_id": "" },
@@ -39,7 +38,9 @@
       ],
       "verb": "POST",
       "body": "",
-      "header": "",
+      "headers": {
+        "X-Channel": "SFMC"
+      },
       "format": "json",
       "useJwt": false,
       "timeout": 10000,

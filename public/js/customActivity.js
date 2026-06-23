@@ -178,8 +178,7 @@ define(['postmonger'], (Postmonger) => {
             { gender: gender ? gender : null },
             { tributario: tributario ? tributario : null },
             { bsuid: bsuid ? bsuid : null },
-            { variables: variables ? variables : null },
-            { canal: "SFMC" }
+            { variables: variables ? variables : null }
         ];
 
         activity['metaData'] = activity['metaData'] || {};
@@ -195,42 +194,20 @@ define(['postmonger'], (Postmonger) => {
     });
 });
 
-const PAIR_SEPARATOR = '__SFMC_PAIR__';
-const KEY_VALUE_SEPARATOR = '__SFMC_KV__';
-
 function serializeObject(obj) {
-  return Object.entries(obj)
-    .map(([key, value]) =>
-      `${key}${KEY_VALUE_SEPARATOR}${value}`
-    )
-    .join(PAIR_SEPARATOR);
+    return Object.entries(obj)
+        .map(([key, value]) => `${key}=${value}`)
+        .join(';');
 }
 
 function deserializeString(str) {
-  const result = {};
-
-  if (!str) {
+    const result = {};
+    str.split(';').forEach(pair => {
+      const [key, ...rest] = pair.split('=');
+      if (!key) {
+        return;
+      }
+      result[key] = rest.join('=');
+    });
     return result;
-  }
-
-  str.split(PAIR_SEPARATOR).forEach(pair => {
-    const separatorIndex = pair.indexOf(KEY_VALUE_SEPARATOR);
-
-    if (separatorIndex === -1) {
-      return;
-    }
-
-    const key = pair.substring(0, separatorIndex);
-    const value = pair.substring(
-      separatorIndex + KEY_VALUE_SEPARATOR.length
-    );
-
-    if (!key) {
-      return;
-    }
-
-    result[key] = value;
-  });
-
-  return result;
 }
