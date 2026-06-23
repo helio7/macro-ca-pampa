@@ -179,6 +179,7 @@ define(['postmonger'], (Postmonger) => {
             { tributario: tributario ? tributario : null },
             { bsuid: bsuid ? bsuid : null },
             { variables: variables ? variables : null },
+            { canal: "SFMC" }
         ];
 
         activity['metaData'] = activity['metaData'] || {};

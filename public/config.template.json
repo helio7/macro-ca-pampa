@@ -29,7 +29,8 @@
         { "dni": "" },
         { "gender": "" },
         { "tributario": "" },
-        { "bsuid": "" }
+        { "bsuid": "" },
+        { "canal": "" }
       ],
       "outArguments": [
         { "activity_instance_id": "" },
