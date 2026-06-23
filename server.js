@@ -8,9 +8,6 @@ const app = express();
 const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
-const salesforceJwtSecret = process.env.SALESFORCE_JWT_SECRET;
-
-const { verify } = require('jsonwebtoken');
 
 app.set('trust proxy', true);
 app.use(express.json());
@@ -106,43 +103,18 @@ app.post('/journeybuilder/save', journeyBuilderAck('save'));
 app.post('/journeybuilder/validate', journeyBuilderAck('validate'));
 app.post('/journeybuilder/publish', journeyBuilderAck('publish'));
 app.post('/journeybuilder/stop', journeyBuilderAck('stop'));
-app.post('/journeybuilder/execute', express.raw({ type: 'application/jwt' }), (req, res) => {
+app.post('/journeybuilder/execute', (req, res) => {
   logRequest('execute', req);
 
-  const jwtBody = Buffer.isBuffer(req.body) ? req.body.toString('utf8') : '';
+  const activityInstanceId = req.body && typeof req.body === 'object'
+    ? req.body.activityInstanceId
+    : null;
 
-  console.log('POST /execute raw JWT body:', jwtBody);
-
-  if (!jwtBody) {
-    return res.status(400).json(buildExecuteResponse('FAILED', 'ERROR_MISSING_JWT_BODY'));
+  if (!activityInstanceId || typeof activityInstanceId !== 'string') {
+    return res.status(422).json(buildExecuteResponse('FAILED', 'ERROR_MISSING_ACTIVITY_INSTANCE_ID'));
   }
 
-  if (!salesforceJwtSecret) {
-    console.error('POST /execute request error: SALESFORCE_JWT_SECRET is not configured.');
-    return res.status(500).json(buildExecuteResponse('FAILED', 'ERROR_MISSING_JWT_SECRET'));
-  }
-
-  verify(
-    jwtBody,
-    salesforceJwtSecret,
-    { algorithms: ['HS256'], complete: false },
-    async (err, decoded) => {
-      if (err) {
-        console.error('POST /execute request error when decoding.', err);
-        return res.status(401).json(buildExecuteResponse('FAILED', 'ERROR_INVALID_JWT'));
-      }
-
-      console.log('POST /execute request decoded.', JSON.stringify(decoded));
-
-      const activityInstanceId = decoded && typeof decoded === 'object' ? decoded.activityInstanceId : null;
-
-      if (!activityInstanceId || typeof activityInstanceId !== 'string') {
-        return res.status(422).json(buildExecuteResponse('FAILED', 'ERROR_MISSING_ACTIVITY_INSTANCE_ID'));
-      }
-
-      return res.status(200).json(buildExecuteResponse('COMPLETED', activityInstanceId));
-    }
-  );
+  return res.status(200).json(buildExecuteResponse('COMPLETED', activityInstanceId));
 });
 
 app.listen(port, () => {

@@ -41,7 +41,7 @@
       "body": "",
       "header": "",
       "format": "json",
-      "useJwt": true,
+      "useJwt": false,
       "timeout": 10000,
       "retryCount": 3,
       "retryDelay": 10000,
