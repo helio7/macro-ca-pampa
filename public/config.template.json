@@ -38,6 +38,9 @@
       ],
       "verb": "POST",
       "body": "",
+      "headers": {
+        "X-Channel": "SFMC"
+      },
       "format": "json",
       "useJwt": false,
       "timeout": 10000,
