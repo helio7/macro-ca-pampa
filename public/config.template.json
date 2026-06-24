@@ -38,7 +38,7 @@
       ],
       "verb": "POST",
       "body": "",
-      "headers": "{\"X-Channel\":\"SFMC\"}",
+      "headers": "",
       "format": "json",
       "useJwt": false,
       "timeout": 10000,

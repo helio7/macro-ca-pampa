@@ -48,6 +48,7 @@ function buildConfig() {
   const config = readConfigTemplate();
   const baseUrl = (process.env.ENDPOINTS_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '');
   const applicationExtensionKey = process.env.SALESFORCE_APPLICATION_EXTENSION_KEY || 'NOT_PROVIDED';
+  const executeXChannel = (process.env.EXECUTE_X_CHANNEL || 'SFMC').trim();
   const { environmentLabel, securityContextKey } = validateEnvironment();
 
   config.configurationArguments.applicationExtensionKey = applicationExtensionKey;
@@ -66,6 +67,8 @@ function buildConfig() {
   } else {
     config.arguments.execute.url = `${baseUrl}/journeybuilder/execute`;
   }
+
+  config.arguments.execute.headers = "{\"X-Channel\":\"" + executeXChannel + "\"}";
 
   const baseName = config.lang['en-US'].name.replace(/\s*-\s*ENVIRONMENT_LABEL$/, '');
   config.lang['en-US'].name = `${baseName} - ${environmentLabel}`;
