@@ -65,7 +65,7 @@
     "stop": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "useJwt": true
+      "useJwt": false
     },
     "validate": {
       "url": "DINAMICALLY_REPLACED",
