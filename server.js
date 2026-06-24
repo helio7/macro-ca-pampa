@@ -18,10 +18,37 @@ function readConfigTemplate() {
   return JSON.parse(fs.readFileSync(configTemplatePath, 'utf8'));
 }
 
+function validateEnvironment() {
+  const environmentLabel = (process.env.ENVIRONMENT_LABEL || '').trim();
+  const securityContextKey = (process.env.SECURITY_CONTEXT_KEY || '').trim();
+
+  if (!environmentLabel) {
+    throw new Error('Missing required environment variable ENVIRONMENT_LABEL.');
+  }
+
+  if (!/^[A-Za-z0-9 _-]+$/.test(environmentLabel)) {
+    throw new Error('ENVIRONMENT_LABEL contains invalid characters. Allowed: letters, numbers, spaces, hyphens, underscores.');
+  }
+
+  if (!securityContextKey) {
+    throw new Error('Missing required environment variable SECURITY_CONTEXT_KEY.');
+  }
+
+  if (!/^[A-Za-z0-9_-]+$/.test(securityContextKey)) {
+    throw new Error('SECURITY_CONTEXT_KEY contains invalid characters. Allowed: letters, numbers, hyphens, underscores.');
+  }
+
+  return {
+    environmentLabel,
+    securityContextKey
+  };
+}
+
 function buildConfig() {
   const config = readConfigTemplate();
   const baseUrl = (process.env.ENDPOINTS_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '');
   const applicationExtensionKey = process.env.SALESFORCE_APPLICATION_EXTENSION_KEY || 'NOT_PROVIDED';
+  const { environmentLabel, securityContextKey } = validateEnvironment();
 
   config.configurationArguments.applicationExtensionKey = applicationExtensionKey;
   config.configurationArguments.save.url = `${baseUrl}/journeybuilder/save`;
@@ -38,6 +65,13 @@ function buildConfig() {
     config.arguments.execute.url = process.env.JB_EXECUTE_URL;
   } else {
     config.arguments.execute.url = `${baseUrl}/journeybuilder/execute`;
+  }
+
+  const baseName = config.lang['en-US'].name.replace(/\s*-\s*ENVIRONMENT_LABEL$/, '');
+  config.lang['en-US'].name = `${baseName} - ${environmentLabel}`;
+
+  if (config.arguments.execute.securityOptions) {
+    config.arguments.execute.securityOptions.securityContextKey = securityContextKey;
   }
 
   return config;
@@ -105,6 +139,7 @@ app.post('/journeybuilder/publish', journeyBuilderAck('publish'));
 app.post('/journeybuilder/stop', journeyBuilderAck('stop'));
 app.post('/journeybuilder/execute', (req, res) => {
   logRequest('execute', req);
+  console.log('POST /execute body:', req.body);
 
   const activityInstanceId = req.body && typeof req.body === 'object'
     ? req.body.activityInstanceId

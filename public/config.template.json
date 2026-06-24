@@ -8,7 +8,7 @@
   "type": "REST",
   "lang": {
     "en-US": {
-      "name": "Enviar WhatsApp - Pampa - SANDBOX",
+      "name": "Enviar WhatsApp - Pampa - ENVIRONMENT_LABEL",
       "description": "Envia un mensaje de WhatsApp a un cliente, usando la API de Pampa.",
       "step1Label": "Configure Activity"
     }
@@ -49,7 +49,7 @@
       "concurrentRequests": 10,
       "securityOptions": {
         "securityType": "securityContext",
-        "securityContextKey": "ApigeeMacroPampaExternalKeySandbox"
+        "securityContextKey": "SECURITY_CONTEXT_KEY"
       }
     }
   },
