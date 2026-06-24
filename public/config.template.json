@@ -39,7 +39,7 @@
       "verb": "POST",
       "body": "",
       "format": "json",
-      "useJwt": true,
+      "useJwt": false,
       "timeout": 10000,
       "retryCount": 3,
       "retryDelay": 10000,
@@ -65,7 +65,7 @@
     "stop": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "useJwt": false
+      "useJwt": true
     },
     "validate": {
       "url": "DINAMICALLY_REPLACED",
