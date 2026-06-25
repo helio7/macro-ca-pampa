@@ -68,7 +68,14 @@ function buildConfig() {
     config.arguments.execute.url = `${baseUrl}/journeybuilder/execute`;
   }
 
-  config.arguments.execute.headers = "{\"X-Channel\":\"" + executeXChannel + "\"}";
+  // config.arguments.execute.headers = "{\"X-Channel\":\"" + executeXChannel + "\"}";
+  config.configurationArguments.validate.headers = "{\"x-channel\":\"" + executeXChannel + "\"}";
+  config.configurationArguments.publish.headers = JSON.stringify({
+    'x-channel': executeXChannel
+  });
+  /* config.arguments.execute.headers = JSON.stringify({
+    'X-Channel': executeXChannel
+  }); */
 
   const baseName = config.lang['en-US'].name.replace(/\s*-\s*ENVIRONMENT_LABEL$/, '');
   config.lang['en-US'].name = `${baseName} - ${environmentLabel}`;
