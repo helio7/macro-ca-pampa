@@ -84,10 +84,6 @@ function buildConfig() {
     config.arguments.execute.securityOptions.securityContextKey = securityContextKey;
   }
 
-  config.configurationArguments.validate.headers = JSON.stringify({
-    'dylan-version': String(version)
-  });
-
   return config;
 }
 

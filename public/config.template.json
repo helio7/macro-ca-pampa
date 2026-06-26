@@ -71,6 +71,7 @@
     "validate": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
+      "headers": "{\"dylan-version\":\"3\"}",
       "useJwt": true
     }
   },
