@@ -44,7 +44,11 @@
       "timeout": 10000,
       "retryCount": 3,
       "retryDelay": 10000,
-      "concurrentRequests": 10
+      "concurrentRequests": 10,
+      "securityOptions": {
+        "securityType": "securityContext",
+        "securityContextKey": "DINAMICALLY_REPLACED"
+      }
     }
   },
   "configurationArguments": {

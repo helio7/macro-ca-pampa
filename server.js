@@ -9,7 +9,7 @@ const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
 
-const VERSION = 4;
+const VERSION = 5;
 
 const basePath = `/version${VERSION}`;
 
@@ -24,6 +24,7 @@ function readConfigTemplate() {
 
 function validateEnvironment() {
   const environmentLabel = (process.env.ENVIRONMENT_LABEL || '').trim();
+  const securityContextKey = (process.env.SECURITY_CONTEXT_KEY || '').trim();
 
   if (!environmentLabel) {
     throw new Error('Missing required environment variable ENVIRONMENT_LABEL.');
@@ -33,14 +34,22 @@ function validateEnvironment() {
     throw new Error('ENVIRONMENT_LABEL contains invalid characters. Allowed: letters, numbers, spaces, hyphens, underscores.');
   }
 
-  return { environmentLabel };
+  if (!securityContextKey) {
+    throw new Error('Missing required environment variable SECURITY_CONTEXT_KEY.');
+  }
+
+  if (!/^[A-Za-z0-9_-]+$/.test(securityContextKey)) {
+    throw new Error('SECURITY_CONTEXT_KEY contains invalid characters. Allowed: letters, numbers, hyphens, underscores.');
+  }
+
+  return { environmentLabel, securityContextKey };
 }
 
 function buildConfig() {
   const config = readConfigTemplate();
   const baseUrl = (process.env.ENDPOINTS_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '') + basePath;
   const applicationExtensionKey = process.env.SALESFORCE_APPLICATION_EXTENSION_KEY || 'NOT_PROVIDED';
-  const { environmentLabel } = validateEnvironment();
+  const { environmentLabel, securityContextKey } = validateEnvironment();
 
   config.configurationArguments.applicationExtensionKey = applicationExtensionKey;
   config.configurationArguments.save.url = `${baseUrl}/journeybuilder/save`;
@@ -61,6 +70,10 @@ function buildConfig() {
 
   const baseName = config.lang['en-US'].name.replace(/\s*-\s*ENVIRONMENT_LABEL$/, '');
   config.lang['en-US'].name = `${baseName} - ${environmentLabel}`;
+
+  if (config.arguments.execute.securityOptions) {
+    config.arguments.execute.securityOptions.securityContextKey = securityContextKey;
+  }
 
   config.configurationArguments.validate.headers = JSON.stringify({ 'dylan-version': String(VERSION) });
 
