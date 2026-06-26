@@ -38,7 +38,7 @@
       ],
       "verb": "POST",
       "body": "",
-      "headers": "",
+      "headers": "{\"X-Channel\":\"SFMC\"}",
       "format": "json",
       "useJwt": false,
       "timeout": 10000,
@@ -56,15 +56,13 @@
     "save": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": {
-        "x-channel": "SFMC"
-      },
+      "headers": "{\"X-Channel\":\"SFMC 1\"}",
       "useJwt": true
     },
     "publish": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "",
+      "headers": "{\"X-Channel\":\"SFMC\"}",
       "useJwt": true
     },
     "stop": {
@@ -76,7 +74,7 @@
     "validate": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "",
+      "headers": "{\"X-Channel\":\"SFMC\"}",
       "useJwt": true
     }
   },
