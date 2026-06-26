@@ -56,7 +56,7 @@
     "save": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "{\"X-Channel\":\"SFMC 1\"}",
+      "headers": "{\"X-Channel\":\"SFMC1\"}",
       "useJwt": true
     },
     "publish": {
