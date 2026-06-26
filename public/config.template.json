@@ -56,25 +56,22 @@
     "save": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "{\"X-Channel\":\"SFMC2\"}",
       "useJwt": true
     },
     "publish": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "{\"X-Channel\":\"SFMC\"}",
       "useJwt": true
     },
     "stop": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "{\"X-Channel\":\"SFMC\"}",
       "useJwt": true
     },
     "validate": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "{\"X-Channel\":\"SFMC\"}",
+      "headers": "{\"X-Channel\":\"SFMC3\"}",
       "useJwt": true
     }
   },
