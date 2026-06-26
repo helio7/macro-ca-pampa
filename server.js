@@ -9,18 +9,20 @@ const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
 
-const basePath = (() => {
-  const raw = (process.env.BASE_PATH || '').trim().replace(/\/+$/, '');
-  if (raw && !raw.startsWith('/')) {
-    throw new Error('BASE_PATH must start with / (e.g. /version123)');
-  }
-  return raw;
+const version = (() => {
+  const raw = (process.env.VERSION || '').trim();
+  if (!raw) throw new Error('Missing required environment variable VERSION.');
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n < 1) throw new Error('VERSION must be a positive integer (e.g. VERSION=5).');
+  return n;
 })();
+
+const basePath = `/version${version}`;
 
 app.set('trust proxy', true);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(basePath || '/', express.static(publicDir));
+app.use(basePath, express.static(publicDir));
 
 function readConfigTemplate() {
   return JSON.parse(fs.readFileSync(configTemplatePath, 'utf8'));
@@ -54,7 +56,7 @@ function validateEnvironment() {
 
 function buildConfig() {
   const config = readConfigTemplate();
-  const baseUrl = (process.env.ENDPOINTS_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '');
+  const baseUrl = (process.env.ENDPOINTS_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '') + basePath;
   const applicationExtensionKey = process.env.SALESFORCE_APPLICATION_EXTENSION_KEY || 'NOT_PROVIDED';
   const { environmentLabel, securityContextKey } = validateEnvironment();
 
@@ -81,6 +83,10 @@ function buildConfig() {
   if (config.arguments.execute.securityOptions) {
     config.arguments.execute.securityOptions.securityContextKey = securityContextKey;
   }
+
+  config.configurationArguments.validate.headers = JSON.stringify({
+    'dylan-version': String(version)
+  });
 
   return config;
 }
