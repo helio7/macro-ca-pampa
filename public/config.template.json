@@ -39,6 +39,7 @@
       "verb": "POST",
       "body": "",
       "header": "",
+      "headers": "DINAMICALLY_REPLACED",
       "format": "json",
       "useJwt": false,
       "timeout": 10000,

@@ -9,7 +9,7 @@ const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
 
-const VERSION = 5;
+const VERSION = 6;
 
 const basePath = `/version${VERSION}`;
 
@@ -75,6 +75,7 @@ function buildConfig() {
     config.arguments.execute.securityOptions.securityContextKey = securityContextKey;
   }
 
+  config.arguments.execute.headers = JSON.stringify({ 'x-channel': 'SFMC' });
   config.configurationArguments.validate.headers = JSON.stringify({ 'dylan-version': String(VERSION) });
 
   return config;
