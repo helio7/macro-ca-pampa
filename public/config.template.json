@@ -71,7 +71,7 @@
     "validate": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "{\"X-Channel\":\"SFMC3\"}",
+      "headers": "{\"X-Channel\":\"SFMC4\"}",
       "useJwt": true
     }
   },
