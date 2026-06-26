@@ -9,15 +9,9 @@ const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
 
-const version = (() => {
-  const raw = (process.env.VERSION || '').trim();
-  if (!raw) throw new Error('Missing required environment variable VERSION.');
-  const n = Number(raw);
-  if (!Number.isInteger(n) || n < 1) throw new Error('VERSION must be a positive integer (e.g. VERSION=5).');
-  return n;
-})();
+const VERSION = 3;
 
-const basePath = `/version${version}`;
+const basePath = `/version${VERSION}`;
 
 app.set('trust proxy', true);
 app.use(express.json());
@@ -84,6 +78,8 @@ function buildConfig() {
     config.arguments.execute.securityOptions.securityContextKey = securityContextKey;
   }
 
+  config.configurationArguments.validate.headers = JSON.stringify({ 'dylan-version': String(VERSION) });
+
   return config;
 }
 
@@ -106,8 +102,8 @@ function logRequest(name, req) {
 }
 
 function journeyBuilderAck(name) {
-  return (req, res) => {
-    logRequest(name, req);
+  return (_req, res) => {
+    console.log(`Journey Builder ${name.toUpperCase()} request received`);
     res.status(200).json({ ok: true, endpoint: name });
   };
 }
@@ -138,14 +134,22 @@ app.get(`${basePath}/`, (_req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
 
-app.get(`${basePath}/config.json`, (_req, res) => {
-  console.log("============== CONFIG.JSON RETRIEVED ==========================================");
+app.get(`${basePath}/config.json`, (req, res) => {
+  console.log(`[config.json] version=${VERSION}`, {
+    ip: req.ip,
+    ips: req.ips,
+    forwardedFor: req.headers['x-forwarded-for'],
+    userAgent: req.headers['user-agent']
+  });
   res.json(configJson);
 });
 
 app.post(`${basePath}/journeybuilder/edit`, journeyBuilderAck('edit'));
 app.post(`${basePath}/journeybuilder/save`, journeyBuilderAck('save'));
-app.post(`${basePath}/journeybuilder/validate`, journeyBuilderAck('validate'));
+app.post(`${basePath}/journeybuilder/validate`, (req, res) => {
+  console.log(`Journey Builder VALIDATE request received`, { 'dylan-version': req.headers['dylan-version'] });
+  res.status(200).json({ ok: true, endpoint: 'validate' });
+});
 app.post(`${basePath}/journeybuilder/publish`, journeyBuilderAck('publish'));
 app.post(`${basePath}/journeybuilder/stop`, journeyBuilderAck('stop'));
 app.post(`${basePath}/journeybuilder/execute`, (req, res) => {
