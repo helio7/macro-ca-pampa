@@ -86,7 +86,7 @@ const configJson = buildConfig();
 function logRequest(name, req) {
   console.log(
     `[${new Date().toISOString()}] Journey Builder ${name.toUpperCase()} request received`,
-    {
+    JSON.stringify({
       method: req.method,
       path: req.originalUrl,
       ip: req.ip,
@@ -95,7 +95,7 @@ function logRequest(name, req) {
       userAgent: req.headers['user-agent'],
       headers: req.headers,
       body: req.body
-    }
+    }, null, 2)
   );
 }
 
