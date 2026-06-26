@@ -38,7 +38,7 @@
       ],
       "verb": "POST",
       "body": "",
-      "headers": "{\"X-Channel\":\"SFMC\"}",
+      "headers": "",
       "format": "json",
       "useJwt": false,
       "timeout": 10000,
@@ -56,7 +56,7 @@
     "save": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
-      "headers": "{\"X-Channel\":\"SFMC1\"}",
+      "headers": "{\"X-Channel\":\"SFMC2\"}",
       "useJwt": true
     },
     "publish": {
