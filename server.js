@@ -9,10 +9,18 @@ const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
 
+const basePath = (() => {
+  const raw = (process.env.BASE_PATH || '').trim().replace(/\/+$/, '');
+  if (raw && !raw.startsWith('/')) {
+    throw new Error('BASE_PATH must start with / (e.g. /version123)');
+  }
+  return raw;
+})();
+
 app.set('trust proxy', true);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(publicDir));
+app.use(basePath || '/', express.static(publicDir));
 
 function readConfigTemplate() {
   return JSON.parse(fs.readFileSync(configTemplatePath, 'utf8'));
@@ -124,21 +132,21 @@ function buildExecuteResponse(estado, activityInstanceId) {
   };
 }
 
-app.get('/', (_req, res) => {
+app.get(`${basePath}/`, (_req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
 
-app.get('/config.json', (_req, res) => {
+app.get(`${basePath}/config.json`, (_req, res) => {
   console.log("============== CONFIG.JSON RETRIEVED ==========================================");
   res.json(configJson);
 });
 
-app.post('/journeybuilder/edit', journeyBuilderAck('edit'));
-app.post('/journeybuilder/save', journeyBuilderAck('save'));
-app.post('/journeybuilder/validate', journeyBuilderAck('validate'));
-app.post('/journeybuilder/publish', journeyBuilderAck('publish'));
-app.post('/journeybuilder/stop', journeyBuilderAck('stop'));
-app.post('/journeybuilder/execute', (req, res) => {
+app.post(`${basePath}/journeybuilder/edit`, journeyBuilderAck('edit'));
+app.post(`${basePath}/journeybuilder/save`, journeyBuilderAck('save'));
+app.post(`${basePath}/journeybuilder/validate`, journeyBuilderAck('validate'));
+app.post(`${basePath}/journeybuilder/publish`, journeyBuilderAck('publish'));
+app.post(`${basePath}/journeybuilder/stop`, journeyBuilderAck('stop'));
+app.post(`${basePath}/journeybuilder/execute`, (req, res) => {
   logRequest('execute', req);
 
   const activityInstanceId = req.body && typeof req.body === 'object'
