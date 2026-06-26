@@ -1,133 +1,213 @@
-define(['postmonger'], function (Postmonger) {
-  'use strict';
+define(['postmonger'], (Postmonger) => {
+    'use strict';
 
-  var connection = new Postmonger.Session();
-  var activity = {
-    arguments: {
-      execute: {
-        inArguments: []
-      }
-    },
-    metaData: {}
-  };
+    let $ = jQuery.noConflict();
+    let connection = new Postmonger.Session();
+    let activity = {};
+    let eventDefinitionKey;
 
-  function byId(id) {
-    return document.getElementById(id);
-  }
-
-  function serializeObject(obj) {
-    return Object.keys(obj)
-      .map(function (key) {
-        return key + '=' + obj[key];
-      })
-      .join(';');
-  }
-
-  function deserializeString(str) {
-    var result = {};
-
-    str.split(';').forEach(function (pair) {
-      var parts = pair.split('=');
-      var key = parts.shift();
-      result[key] = parts.join('=');
-    });
-
-    return result;
-  }
-
-  function addVariableRow(value) {
-    if (typeof window.addItem === 'function') {
-      window.addItem(value || '');
+    function normalizeColumnName(value) {
+        return (value || '').replace(/\s+/g, '');
     }
-  }
 
-  function populateForm(data) {
-    var inArguments =
-      data &&
-      data.arguments &&
-      data.arguments.execute &&
-      Array.isArray(data.arguments.execute.inArguments)
-        ? data.arguments.execute.inArguments
-        : [];
+    function setNormalizedValue(element, value) {
+        if (!element) {
+            return '';
+        }
 
-    activity = data || activity;
+        const normalizedValue = normalizeColumnName(value);
+        element.value = normalizedValue;
+        element.classList.toggle('invalid-column-name', /\s/.test(value || ''));
+        return normalizedValue;
+    }
 
-    inArguments.forEach(function (argument) {
-      if (argument.dataExtension) {
-        byId('dataExtension').value = argument.dataExtension;
-      }
+    function getArgumentValue(inArguments, key) {
+        const argument = inArguments.find((item) => Object.prototype.hasOwnProperty.call(item, key));
+        return argument ? argument[key] : '';
+    }
 
-      if (argument.dataExtensionPhoneNumberColumnName) {
-        byId('dataExtensionPhoneNumberColumnName').value =
-          argument.dataExtensionPhoneNumberColumnName;
-      }
+    function buildContactAttribute(dataExtension, columnName) {
+        if (!dataExtension || !columnName) {
+            return null;
+        }
 
-      if (argument.campaignName) {
-        byId('campaignName').value = argument.campaignName;
-      }
+        return `{{Contact.Attribute."${dataExtension}".${columnName}}}`;
+    }
 
-      if (argument.templateId) {
-        byId('templateId').value = argument.templateId;
-      }
+    $(window).ready(() => {
+        connection.trigger('ready');
+        connection.trigger('requestTokens');
+        connection.trigger('requestEndpoints');
+        connection.trigger('requestTriggerEventDefinition');
+        connection.trigger('requestInteraction');
+    });
 
-      if (argument.variables && argument.variables !== 'NO_VARIABLES') {
-        var parsedVariables = deserializeString(argument.variables);
+    connection.on('initActivity', (data) => {
+        console.log('[customActivity] initActivity:rawData', data);
 
-        Object.keys(parsedVariables).forEach(function (key) {
-          var value = parsedVariables[key];
-          var columnName = value.split('.').pop().replace('}}', '');
-          addVariableRow(columnName);
+        if (data) {
+            activity = data;
+        }
+
+        const inArguments = Boolean(
+            data &&
+            data.arguments &&
+            data.arguments.execute &&
+            data.arguments.execute.inArguments &&
+            data.arguments.execute.inArguments.length > 0
+        ) ? data.arguments.execute.inArguments : [];
+
+        console.log('[customActivity] initActivity:inArguments', inArguments);
+
+        const dataExtension = getArgumentValue(inArguments, 'dataExtension');
+        const dataExtensionPhoneNumberColumnName = getArgumentValue(inArguments, 'dataExtensionPhoneNumberColumnName');
+        const dataExtensionDniColumnName = getArgumentValue(inArguments, 'dataExtensionDniColumnName');
+        const dataExtensionGenderColumnName = getArgumentValue(inArguments, 'dataExtensionGenderColumnName');
+        const dataExtensionTributarioColumnName = getArgumentValue(inArguments, 'dataExtensionTributarioColumnName');
+        const dataExtensionBsuidColumnName = getArgumentValue(inArguments, 'dataExtensionBsuidColumnName');
+        const campaignName = getArgumentValue(inArguments, 'campaignName');
+        const templateId = getArgumentValue(inArguments, 'templateId');
+        const variablesValue = getArgumentValue(inArguments, 'variables');
+
+        console.log('[customActivity] initActivity:resolvedValues', {
+            dataExtension,
+            dataExtensionPhoneNumberColumnName,
+            dataExtensionDniColumnName,
+            dataExtensionGenderColumnName,
+            dataExtensionTributarioColumnName,
+            dataExtensionBsuidColumnName,
+            campaignName,
+            templateId,
+            variablesValue
         });
-      }
+
+        if (dataExtension) document.getElementById('dataExtension').value = dataExtension;
+        if (dataExtensionPhoneNumberColumnName) setNormalizedValue(document.getElementById('dataExtensionPhoneNumberColumnName'), dataExtensionPhoneNumberColumnName);
+        if (dataExtensionDniColumnName) setNormalizedValue(document.getElementById('dni'), dataExtensionDniColumnName);
+        if (dataExtensionGenderColumnName) setNormalizedValue(document.getElementById('gender'), dataExtensionGenderColumnName);
+        if (dataExtensionTributarioColumnName) setNormalizedValue(document.getElementById('tributario'), dataExtensionTributarioColumnName);
+        if (dataExtensionBsuidColumnName) setNormalizedValue(document.getElementById('bsuid'), dataExtensionBsuidColumnName);
+        if (campaignName) document.getElementById('campaignName').value = campaignName;
+        if (templateId) document.getElementById('templateId').value = templateId;
+
+        if (variablesValue && variablesValue !== 'NO_VARIABLES') {
+            const parsedVariables = deserializeString(variablesValue);
+            console.log('[customActivity] initActivity:parsedVariables', parsedVariables);
+
+            for (const parsedVariable in parsedVariables) {
+                addItem(parsedVariables[parsedVariable].split('.').pop()?.replace('}}', ''));
+            }
+        }
+
+        console.log('[customActivity] initActivity:complete');
     });
-  }
 
-  function buildArguments() {
-    var dataExtension = byId('dataExtension').value;
-    var phoneColumnName = byId('dataExtensionPhoneNumberColumnName').value;
-    var campaignName = byId('campaignName').value;
-    var templateId = byId('templateId').value;
-    var phoneNumber = '{{Contact.Attribute."' + dataExtension + '".' + phoneColumnName + '}}';
-    var variables = {};
-    var rows = document.querySelectorAll('.variable-item');
+    connection.on('clickedNext', () => {
+        console.log('[customActivity] clickedNext:start');
 
-    rows.forEach(function (row) {
-      var input = row.querySelector('input');
-      var variableNumber = row.id.replace('group-', '');
-      variables[variableNumber] =
-        '{{Contact.Attribute."' + dataExtension + '".' + input.value + '}}';
+        const dataExtension = document.getElementById('dataExtension').value;
+        const dataExtensionPhoneNumberColumnName = setNormalizedValue(
+            document.getElementById('dataExtensionPhoneNumberColumnName'),
+            document.getElementById('dataExtensionPhoneNumberColumnName').value,
+        );
+        const dataExtensionDniColumnName = setNormalizedValue(
+            document.getElementById('dni'),
+            document.getElementById('dni').value,
+        );
+        const dataExtensionGenderColumnName = setNormalizedValue(
+            document.getElementById('gender'),
+            document.getElementById('gender').value,
+        );
+        const dataExtensionTributarioColumnName = setNormalizedValue(
+            document.getElementById('tributario'),
+            document.getElementById('tributario').value,
+        );
+        const dataExtensionBsuidColumnName = setNormalizedValue(
+            document.getElementById('bsuid'),
+            document.getElementById('bsuid').value,
+        );
+        const campaignName = document.getElementById('campaignName').value;
+        const templateId = document.getElementById('templateId').value;
+        const phoneNumber = buildContactAttribute(dataExtension, dataExtensionPhoneNumberColumnName);
+        const dni = buildContactAttribute(dataExtension, dataExtensionDniColumnName);
+        const gender = buildContactAttribute(dataExtension, dataExtensionGenderColumnName);
+        const tributario = buildContactAttribute(dataExtension, dataExtensionTributarioColumnName);
+        const bsuid = buildContactAttribute(dataExtension, dataExtensionBsuidColumnName);
+
+        const groupDivs = document.querySelectorAll('.variable-item');
+        const variablesObject = {};
+        for (const groupDiv of groupDivs) {
+            const input = groupDiv.querySelector('input');
+            const variableNumber = groupDiv.id.split('group-')[1];
+            const dataExtensionColumnName = setNormalizedValue(input, input.value);
+            variablesObject[variableNumber] = buildContactAttribute(dataExtension, dataExtensionColumnName);
+        }
+        const variables = groupDivs.length ? serializeObject(variablesObject) : 'NO_VARIABLES';
+
+        console.log('[customActivity] clickedNext:resolvedValues', {
+            dataExtension,
+            dataExtensionPhoneNumberColumnName,
+            dataExtensionDniColumnName,
+            dataExtensionGenderColumnName,
+            dataExtensionTributarioColumnName,
+            dataExtensionBsuidColumnName,
+            campaignName,
+            templateId,
+            phoneNumber,
+            dni,
+            gender,
+            tributario,
+            bsuid,
+            variablesObject,
+            variables
+        });
+
+        activity['arguments'] = activity['arguments'] || {};
+        activity['arguments'].execute = activity['arguments'].execute || {};
+        activity['arguments'].execute.inArguments = [
+            { dataExtension: dataExtension ? dataExtension : null },
+            { dataExtensionPhoneNumberColumnName: dataExtensionPhoneNumberColumnName ? dataExtensionPhoneNumberColumnName : null },
+            { dataExtensionDniColumnName: dataExtensionDniColumnName ? dataExtensionDniColumnName : null },
+            { dataExtensionGenderColumnName: dataExtensionGenderColumnName ? dataExtensionGenderColumnName : null },
+            { dataExtensionTributarioColumnName: dataExtensionTributarioColumnName ? dataExtensionTributarioColumnName : null },
+            { dataExtensionBsuidColumnName: dataExtensionBsuidColumnName ? dataExtensionBsuidColumnName : null },
+            { campaignName: campaignName ? campaignName : null },
+            { templateId: templateId ? templateId : null },
+            { phoneNumber: phoneNumber ? phoneNumber : null },
+            { dni: dni ? dni : null },
+            { gender: gender ? gender : null },
+            { tributario: tributario ? tributario : null },
+            { bsuid: bsuid ? bsuid : null },
+            { variables: variables ? variables : null }
+        ];
+
+        activity['metaData'] = activity['metaData'] || {};
+        activity['metaData'].isConfigured = true;
+
+        console.log('[customActivity] clickedNext:updateActivity', activity);
+        connection.trigger('updateActivity', activity);
     });
 
-    return [
-      { dataExtension: dataExtension || null },
-      {
-        dataExtensionPhoneNumberColumnName: phoneColumnName || null
-      },
-      { campaignName: campaignName || null },
-      { templateId: templateId || null },
-      { phoneNumber: dataExtension && phoneColumnName ? phoneNumber : null },
-      {
-        variables: rows.length ? serializeObject(variables) : 'NO_VARIABLES'
-      }
-    ];
-  }
-
-  window.onload = function () {
-    connection.trigger('ready');
-    connection.trigger('requestTokens');
-    connection.trigger('requestEndpoints');
-    connection.trigger('requestTriggerEventDefinition');
-    connection.trigger('requestInteraction');
-  };
-
-  connection.on('initActivity', populateForm);
-
-  connection.on('clickedNext', function () {
-    activity.arguments = activity.arguments || {};
-    activity.arguments.execute = activity.arguments.execute || {};
-    activity.arguments.execute.inArguments = buildArguments();
-    activity.metaData = activity.metaData || {};
-    activity.metaData.isConfigured = true;
-    connection.trigger('updateActivity', activity);
-  });
+    connection.on('requestedTriggerEventDefinition', (eventDefinitionModel) => {
+        console.log('[customActivity] requestedTriggerEventDefinition', eventDefinitionModel);
+        if (eventDefinitionModel) eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
+    });
 });
+
+function serializeObject(obj) {
+    return Object.entries(obj)
+        .map(([key, value]) => `${key}=${value}`)
+        .join(';');
+}
+
+function deserializeString(str) {
+    const result = {};
+    str.split(';').forEach(pair => {
+      const [key, ...rest] = pair.split('=');
+      if (!key) {
+        return;
+      }
+      result[key] = rest.join('=');
+    });
+    return result;
+}

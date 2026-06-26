@@ -8,7 +8,7 @@
   "type": "REST",
   "lang": {
     "en-US": {
-      "name": "Enviar WhatsApp - Pampa - TEST",
+      "name": "Enviar WhatsApp - Pampa - ENVIRONMENT_LABEL",
       "description": "Envia un mensaje de WhatsApp a un cliente, usando la API de Pampa.",
       "step1Label": "Configure Activity"
     }
@@ -18,22 +18,37 @@
       "inArguments": [
         { "dataExtension": "" },
         { "dataExtensionPhoneNumberColumnName": "" },
+        { "dataExtensionDniColumnName": "" },
+        { "dataExtensionGenderColumnName": "" },
+        { "dataExtensionTributarioColumnName": "" },
+        { "dataExtensionBsuidColumnName": "" },
         { "campaignName": "" },
         { "templateId": "" },
+        { "variables": "" },
         { "phoneNumber": "" },
-        { "variables": "" }
+        { "dni": "" },
+        { "gender": "" },
+        { "tributario": "" },
+        { "bsuid": "" }
       ],
       "outArguments": [
-        { "success": false }
+        { "activity_instance_id": "" },
+        { "estado": "" },
+        { "fecha": "" }
       ],
       "verb": "POST",
       "body": "",
-      "header": "",
+      "headers": "{\"X-Channel\":\"SFMC\"}",
       "format": "json",
-      "useJwt": true,
+      "useJwt": false,
       "timeout": 10000,
       "retryCount": 3,
-      "retryDelay": 10000
+      "retryDelay": 10000,
+      "concurrentRequests": 10,
+      "securityOptions": {
+        "securityType": "securityContext",
+        "securityContextKey": "SECURITY_CONTEXT_KEY"
+      }
     }
   },
   "configurationArguments": {
@@ -41,21 +56,25 @@
     "save": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
+      "headers": "{\"X-Channel\":\"SFMC1\"}",
       "useJwt": true
     },
     "publish": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
+      "headers": "{\"X-Channel\":\"SFMC\"}",
       "useJwt": true
     },
     "stop": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
+      "headers": "{\"X-Channel\":\"SFMC\"}",
       "useJwt": true
     },
     "validate": {
       "url": "DINAMICALLY_REPLACED",
       "verb": "POST",
+      "headers": "{\"X-Channel\":\"SFMC\"}",
       "useJwt": true
     }
   },
@@ -81,6 +100,26 @@
               "isNullable": true,
               "direction": "in"
             },
+            "dataExtensionDniColumnName": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "dataExtensionGenderColumnName": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "dataExtensionTributarioColumnName": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "dataExtensionBsuidColumnName": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
             "campaignName": {
               "dataType": "Text",
               "isNullable": true,
@@ -91,12 +130,32 @@
               "isNullable": true,
               "direction": "in"
             },
-            "phoneNumber": {
+            "variables": {
               "dataType": "Text",
               "isNullable": true,
               "direction": "in"
             },
-            "variables": {
+            "phoneNumber": {
+              "dataType": "Phone",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "dni": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "gender": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "tributario": {
+              "dataType": "Text",
+              "isNullable": true,
+              "direction": "in"
+            },
+            "bsuid": {
               "dataType": "Text",
               "isNullable": true,
               "direction": "in"
@@ -105,8 +164,18 @@
         ],
         "outArguments": [
           {
-            "success": {
-              "dataType": "Boolean",
+            "activity_instance_id": {
+              "dataType": "Text",
+              "direction": "out",
+              "access": "visible"
+            },
+            "estado": {
+              "dataType": "Text",
+              "direction": "out",
+              "access": "visible"
+            },
+            "fecha": {
+              "dataType": "Text",
               "direction": "out",
               "access": "visible"
             }
