@@ -99,7 +99,7 @@ define(['postmonger'], (Postmonger) => {
             document.getElementById('dataExtensionPhoneNumberColumnName').value,
         );
         const dataExtensionDniColumnName = 'dni';
-        const dataExtensionGenderColumnName = 'gender';
+        const dataExtensionGenderColumnName = 'genero';
         const dataExtensionTributarioColumnName = 'tributario';
         const dataExtensionBsuidColumnName = 'bsuid';
         const campaignName = document.getElementById('campaignName').value;
