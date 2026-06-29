@@ -61,10 +61,6 @@ define(['postmonger'], (Postmonger) => {
 
         const dataExtension = getArgumentValue(inArguments, 'dataExtension');
         const dataExtensionPhoneNumberColumnName = getArgumentValue(inArguments, 'dataExtensionPhoneNumberColumnName');
-        const dataExtensionDniColumnName = getArgumentValue(inArguments, 'dataExtensionDniColumnName');
-        const dataExtensionGenderColumnName = getArgumentValue(inArguments, 'dataExtensionGenderColumnName');
-        const dataExtensionTributarioColumnName = getArgumentValue(inArguments, 'dataExtensionTributarioColumnName');
-        const dataExtensionBsuidColumnName = getArgumentValue(inArguments, 'dataExtensionBsuidColumnName');
         const campaignName = getArgumentValue(inArguments, 'campaignName');
         const templateId = getArgumentValue(inArguments, 'templateId');
         const variablesValue = getArgumentValue(inArguments, 'variables');
@@ -72,10 +68,6 @@ define(['postmonger'], (Postmonger) => {
         console.log('[customActivity] initActivity:resolvedValues', {
             dataExtension,
             dataExtensionPhoneNumberColumnName,
-            dataExtensionDniColumnName,
-            dataExtensionGenderColumnName,
-            dataExtensionTributarioColumnName,
-            dataExtensionBsuidColumnName,
             campaignName,
             templateId,
             variablesValue
@@ -83,10 +75,6 @@ define(['postmonger'], (Postmonger) => {
 
         if (dataExtension) document.getElementById('dataExtension').value = dataExtension;
         if (dataExtensionPhoneNumberColumnName) setNormalizedValue(document.getElementById('dataExtensionPhoneNumberColumnName'), dataExtensionPhoneNumberColumnName);
-        if (dataExtensionDniColumnName) setNormalizedValue(document.getElementById('dni'), dataExtensionDniColumnName);
-        if (dataExtensionGenderColumnName) setNormalizedValue(document.getElementById('gender'), dataExtensionGenderColumnName);
-        if (dataExtensionTributarioColumnName) setNormalizedValue(document.getElementById('tributario'), dataExtensionTributarioColumnName);
-        if (dataExtensionBsuidColumnName) setNormalizedValue(document.getElementById('bsuid'), dataExtensionBsuidColumnName);
         if (campaignName) document.getElementById('campaignName').value = campaignName;
         if (templateId) document.getElementById('templateId').value = templateId;
 
@@ -110,22 +98,10 @@ define(['postmonger'], (Postmonger) => {
             document.getElementById('dataExtensionPhoneNumberColumnName'),
             document.getElementById('dataExtensionPhoneNumberColumnName').value,
         );
-        const dataExtensionDniColumnName = setNormalizedValue(
-            document.getElementById('dni'),
-            document.getElementById('dni').value,
-        );
-        const dataExtensionGenderColumnName = setNormalizedValue(
-            document.getElementById('gender'),
-            document.getElementById('gender').value,
-        );
-        const dataExtensionTributarioColumnName = setNormalizedValue(
-            document.getElementById('tributario'),
-            document.getElementById('tributario').value,
-        );
-        const dataExtensionBsuidColumnName = setNormalizedValue(
-            document.getElementById('bsuid'),
-            document.getElementById('bsuid').value,
-        );
+        const dataExtensionDniColumnName = 'dni';
+        const dataExtensionGenderColumnName = 'gender';
+        const dataExtensionTributarioColumnName = 'tributario';
+        const dataExtensionBsuidColumnName = 'bsuid';
         const campaignName = document.getElementById('campaignName').value;
         const templateId = document.getElementById('templateId').value;
         const phoneNumber = buildContactAttribute(dataExtension, dataExtensionPhoneNumberColumnName);
@@ -167,10 +143,6 @@ define(['postmonger'], (Postmonger) => {
         activity['arguments'].execute.inArguments = [
             { dataExtension: dataExtension ? dataExtension : null },
             { dataExtensionPhoneNumberColumnName: dataExtensionPhoneNumberColumnName ? dataExtensionPhoneNumberColumnName : null },
-            { dataExtensionDniColumnName: dataExtensionDniColumnName ? dataExtensionDniColumnName : null },
-            { dataExtensionGenderColumnName: dataExtensionGenderColumnName ? dataExtensionGenderColumnName : null },
-            { dataExtensionTributarioColumnName: dataExtensionTributarioColumnName ? dataExtensionTributarioColumnName : null },
-            { dataExtensionBsuidColumnName: dataExtensionBsuidColumnName ? dataExtensionBsuidColumnName : null },
             { campaignName: campaignName ? campaignName : null },
             { templateId: templateId ? templateId : null },
             { phoneNumber: phoneNumber ? phoneNumber : null },

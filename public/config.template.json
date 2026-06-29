@@ -18,10 +18,6 @@
       "inArguments": [
         { "dataExtension": "" },
         { "dataExtensionPhoneNumberColumnName": "" },
-        { "dataExtensionDniColumnName": "" },
-        { "dataExtensionGenderColumnName": "" },
-        { "dataExtensionTributarioColumnName": "" },
-        { "dataExtensionBsuidColumnName": "" },
         { "campaignName": "" },
         { "templateId": "" },
         { "variables": "" },
@@ -94,26 +90,6 @@
               "direction": "in"
             },
             "dataExtensionPhoneNumberColumnName": {
-              "dataType": "Text",
-              "isNullable": true,
-              "direction": "in"
-            },
-            "dataExtensionDniColumnName": {
-              "dataType": "Text",
-              "isNullable": true,
-              "direction": "in"
-            },
-            "dataExtensionGenderColumnName": {
-              "dataType": "Text",
-              "isNullable": true,
-              "direction": "in"
-            },
-            "dataExtensionTributarioColumnName": {
-              "dataType": "Text",
-              "isNullable": true,
-              "direction": "in"
-            },
-            "dataExtensionBsuidColumnName": {
               "dataType": "Text",
               "isNullable": true,
               "direction": "in"
