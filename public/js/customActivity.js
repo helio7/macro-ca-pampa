@@ -100,7 +100,7 @@ define(['postmonger'], (Postmonger) => {
         );
         const dataExtensionDniColumnName = 'dni';
         const dataExtensionGenderColumnName = 'genero';
-        const dataExtensionTributarioColumnName = 'tributario';
+        const dataExtensionTributarioColumnName = 'cuit';
         const dataExtensionBsuidColumnName = 'bsuid';
         const campaignName = document.getElementById('campaignName').value;
         const templateId = document.getElementById('templateId').value;
