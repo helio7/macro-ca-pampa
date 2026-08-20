@@ -9,7 +9,7 @@ const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
 
-const VERSION = 6;
+const VERSION = 7;
 
 const basePath = `/version${VERSION}`;
 
