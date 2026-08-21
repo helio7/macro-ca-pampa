@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls ~/.ssh/)",
+      "Read(//c/Users/Dylan Haffner/**)"
+    ]
+  }
+}
