@@ -9,7 +9,7 @@ const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(__dirname, 'public');
 const configTemplatePath = path.join(publicDir, 'config.template.json');
 
-const VERSION = 11;
+const VERSION = 12;
 
 const basePath = `/version${VERSION}`;
 
@@ -75,7 +75,11 @@ function buildConfig() {
     config.arguments.execute.securityOptions.securityContextKey = securityContextKey;
   }
 
-  config.arguments.execute.headers = JSON.stringify({ 'x-channel': 'SFMC' });
+  const headers = { 'x-channel': 'SFMC' };
+  if (process.env.API_KEY) {
+    headers['apikey'] = process.env.API_KEY;
+  }
+  config.arguments.execute.headers = JSON.stringify(headers);
   config.configurationArguments.validate.headers = JSON.stringify({ 'dylan-version': String(VERSION) });
 
   return config;
