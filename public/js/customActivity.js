@@ -1,4 +1,4 @@
-define(['postmonger'], (Postmonger) => {
+(function (Postmonger) {
     'use strict';
 
     let $ = jQuery.noConflict();
@@ -192,7 +192,7 @@ define(['postmonger'], (Postmonger) => {
         console.log('[customActivity] requestedTriggerEventDefinition', eventDefinitionModel);
         if (eventDefinitionModel) eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
     });
-});
+})(window.Postmonger);
 
 function serializeObject(obj) {
     return Object.entries(obj)
