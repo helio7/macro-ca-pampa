@@ -1,28 +1,389 @@
 <!DOCTYPE html>
 <html>
-    <head>
+    
+
+    
         <title>Enviar WhatsApp - Apigee</title>
-        <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="ie-edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="css/styles.css">
-        <script type="text/javascript" src="js/require.js"></script>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie-edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+       
+        <style>
+          html,
+          body {
+            min-height: 100%;
+          }
+
+          body {
+            margin: 0;
+            padding: 24px;
+            background: #f5f6f8;
+            font-family: Arial, sans-serif;
+            color: #333;
+          }
+
+          .main-block {
+            max-width: 640px;
+            margin: 0 auto;
+            border: 1px solid #c8cdd5;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(20, 34, 66, 0.08);
+          }
+
+          header {
+            background: #5f6773;
+            padding: 16px 20px;
+          }
+
+          header h1 {
+            margin: 0;
+            font-size: 18px;
+            color: #fff;
+          }
+
+          .description {
+            margin: 16px 20px 0;
+            font-size: 14px;
+            line-height: 1.5;
+          }
+
+          #content {
+            padding: 12px 20px 20px;
+          }
+
+          form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+
+          fieldset {
+            border: 1px solid #c8cdd5;
+            padding: 12px;
+          }
+
+          legend {
+            padding: 0 6px;
+            font-size: 12px;
+            color: #5f6773;
+          }
+
+          .text-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #c8cdd5;
+            box-sizing: border-box;
+          }
+
+          .text-input.invalid-column-name {
+            border-color: #c0392b;
+            background: #fff5f4;
+          }
+
+          .grouped-fieldset {
+            background: #f9fbfd;
+          }
+
+          .grouped-note {
+            margin: 0 0 12px;
+            font-size: 12px;
+            color: #6b7280;
+          }
+
+          .grouped-fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+          }
+
+          .grouped-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+          }
+
+          .grouped-field label {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4f5968;
+          }
+
+          .type-hint {
+            font-size: 12px;
+            font-weight: 700;
+          }
+
+          .text-hint {
+            color: #b42318;
+          }
+
+          .phone-hint {
+            color: #1d4ed8;
+          }
+
+          .grouped-field.full-width {
+            grid-column: 1 / -1;
+          }
+
+          #variables-fieldset {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+
+          .buttons-row {
+            display: flex;
+            gap: 8px;
+          }
+
+          .buttons-row button {
+            padding: 8px 12px;
+            border: 1px solid #5f6773;
+            background: #fff;
+            cursor: pointer;
+          }
+
+          .variable-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+          }
+
+          @media (max-width: 640px) {
+            .grouped-fields {
+              grid-template-columns: 1fr;
+            }
+
+            .grouped-field.full-width {
+              grid-column: auto;
+            }
+          }
+        </style>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="js/require.js"></script>
         <script> var $jq = jQuery.noConflict(); </script>
-        <script type="text/javascript">
-            (function() {
-                var config = {
-                    baseUrl: 'js'
-                };
-                var dependencies = [
-                    'customActivity'
-                ];
-                require(config, dependencies);
-            })();
+        <script>
+          !function (e, t) { "function" == typeof define && define.amd ? define("postmonger", [], function () { return t(e) }) : "object" == typeof exports ? module.exports = t(e) : e.Postmonger = t(e) }(this, function (e) { e = e || window; var t, n, o, r, c = c || void 0, a = e.Postmonger, i = e.addEventListener || e.attachEvent ? e : window; return t = "undefined" != typeof c ? c : {}, t.noConflict = function () { return e.Postmonger = a, this }, t.version = "0.0.14", n = t.Connection = function (e) { e = "object" == typeof e ? e : {}; var t = e.connect || i.parent, n = e.from || "*", o = e.to || "*", r = this; return "string" == typeof t && (t = document.getElementById(t)), t && !t.postMessage && t.jquery && (t = t.get(0)), t && !t.postMessage && (t.contentWindow || t.contentDocument) && (t = t.contentWindow || t.contentDocument), t && t.postMessage ? (r.connect = t, r.to = o, r.from = n, r) : (i.console && i.console.warn && i.console.warn(" Warning: Postmonger could not establish connection with ", e.connect), !1) }, o = t.Events = function () { var e = /\s+/, t = this; return t._callbacks = {}, t._has = function (e, t) { return Object.prototype.hasOwnProperty.call(e, t) }, t._keys = function (e) { if (Object.keys) return Object.keys(e); if ("object" != typeof e) throw new TypeError("Invalid object"); var n = []; for (var o in e) t._has(e, o) && (n[n.length] = o); return n }, t.on = function (n, o, r) { var c, a, i, s, f; if (!o) return t; for (n = n.split(e), t._callbacks = t._callbacks || {}, c = t._callbacks; a = n.shift() ;) f = c[a], i = f ? f.tail : {}, s = {}, i.next = s, i.context = r, i.callback = o, c[a] = { tail: s, next: f ? f.next : i }; return t }, t.off = function (n, o, r) { var c, a, i, s, f, l = t._callbacks; if (l) { if (!(n || o || r)) return delete t._callbacks, t; for (n = n ? n.split(e) : t._keys(l) ; c = n.shift() ;) if (a = l[c], delete l[c], a && (o || r)) for (i = a.tail; (a = a.next) !== i;) s = a.callback, f = a.context, (o && s) === o && (r && f) === r || t.on(c, s, f); return t } }, t.trigger = function (n) { var o, r, c, a, i, s, f; if (!(c = t._callbacks)) return t; for (s = c.all, n = n.split(e), f = Array.prototype.slice.call(arguments, 1) ; o = n.shift() ;) { if (r = c[o]) for (a = r.tail; (r = r.next) !== a;) r.callback.apply(r.context || t, f); if (r = s) for (a = r.tail, i = [o].concat(f) ; (r = r.next) !== a;) r.callback.apply(r.context || t, i) } return t }, t }, r = t.Session = function () { var t, r, c, a, s, f, l = arguments.length > 0 ? Array.prototype.slice.call(arguments, 0) : [{}], u = [], p = new o, g = new o, d = this; for (d.on = p.on, d.off = p.off, d.trigger = g.trigger, d.end = function () { return p.off(), g.off(), i.removeEventListener ? i.removeEventListener("message", f, !1) : i.detachEvent && i.detachEvent("onmessage", f), d }, r = 0, a = l.length; a > r; r++) if (t = new n(l[r])) { for (c = 0, s = u.length; s > c; c++) if (u[c].connect === t.connect && u[c].from === t.from && u[c].to === t.to) { t = null; break } t && u.push(t) } if (f = function (t) { var n, o, r, c = null, a = []; for (o = 0, r = u.length; r > o; o++) if (u[o].connect === t.source) { c = u[o]; break } if (!c) return !1; if ("*" !== c.from && c.from !== t.origin) return !1; try { if (n = JSON.parse(t.data), !n.e) return !1 } catch (i) { return !1 } a.push(n.e), delete n.e; for (o in n) a.push(n[o]); p.trigger.apply(e, a) }, i.addEventListener) i.addEventListener("message", f, !1); else { if (!i.attachEvent) return i.console && i.console.warn && i.console.warn("WARNING: Postmonger could not listen for messages on window %o", i), !1; i.attachEvent("onmessage", f) } return g.on("all", function () { var e, t, n = Array.prototype.slice.call(arguments, 0), o = {}; for (o.e = n[0], e = 1, t = n.length; t > e; e++) o["a" + e] = n[e]; for (e = 0, t = u.length; t > e; e++) u[e].connect.postMessage(JSON.stringify(o), u[e].to) }), d }, t });
         </script>
-    </head>
-    <body>
+        <script>
+          // was: define(['postmonger'], (Postmonger) => {
+(function (Postmonger) {
+    'use strict';
+
+    let $ = jQuery.noConflict();
+    let connection = new Postmonger.Session();
+    let activity = {};
+    let eventDefinitionKey;
+
+    function normalizeColumnName(value) {
+        return (value || '').replace(/\s+/g, '');
+    }
+
+    function setNormalizedValue(element, value) {
+        if (!element) {
+            return '';
+        }
+
+        const normalizedValue = normalizeColumnName(value);
+        element.value = normalizedValue;
+        element.classList.toggle('invalid-column-name', /\s/.test(value || ''));
+        return normalizedValue;
+    }
+
+    function getArgumentValue(inArguments, key) {
+        const argument = inArguments.find((item) => Object.prototype.hasOwnProperty.call(item, key));
+        return argument ? argument[key] : '';
+    }
+
+    function buildContactAttribute(dataExtension, columnName) {
+        if (!dataExtension || !columnName) {
+            return null;
+        }
+
+        return `{{Contact.Attribute."${dataExtension}".${columnName}}}`;
+    }
+
+    $(window).ready(() => {
+        connection.trigger('ready');
+        connection.trigger('requestTokens');
+        connection.trigger('requestEndpoints');
+        connection.trigger('requestTriggerEventDefinition');
+        connection.trigger('requestInteraction');
+    });
+
+    connection.on('initActivity', (data) => {
+        console.log('[customActivity] initActivity:rawData', data);
+
+        if (data) {
+            activity = data;
+        }
+
+        const inArguments = Boolean(
+            data &&
+            data.arguments &&
+            data.arguments.execute &&
+            data.arguments.execute.inArguments &&
+            data.arguments.execute.inArguments.length > 0
+        ) ? data.arguments.execute.inArguments : [];
+
+        console.log('[customActivity] initActivity:inArguments', inArguments);
+
+        const dataExtension = getArgumentValue(inArguments, 'dataExtension');
+        const dataExtensionPhoneNumberColumnName = getArgumentValue(inArguments, 'dataExtensionPhoneNumberColumnName');
+        const dataExtensionDniColumnName = getArgumentValue(inArguments, 'dataExtensionDniColumnName');
+        const dataExtensionGenderColumnName = getArgumentValue(inArguments, 'dataExtensionGenderColumnName');
+        const dataExtensionTributarioColumnName = getArgumentValue(inArguments, 'dataExtensionTributarioColumnName');
+        const dataExtensionBsuidColumnName = getArgumentValue(inArguments, 'dataExtensionBsuidColumnName');
+        const campaignName = getArgumentValue(inArguments, 'campaignName');
+        const templateId = getArgumentValue(inArguments, 'templateId');
+        const variablesValue = getArgumentValue(inArguments, 'variables');
+
+        console.log('[customActivity] initActivity:resolvedValues', {
+            dataExtension,
+            dataExtensionPhoneNumberColumnName,
+            dataExtensionDniColumnName,
+            dataExtensionGenderColumnName,
+            dataExtensionTributarioColumnName,
+            dataExtensionBsuidColumnName,
+            campaignName,
+            templateId,
+            variablesValue
+        });
+
+        if (dataExtension) document.getElementById('dataExtension').value = dataExtension;
+        if (dataExtensionPhoneNumberColumnName) setNormalizedValue(document.getElementById('dataExtensionPhoneNumberColumnName'), dataExtensionPhoneNumberColumnName);
+        if (dataExtensionDniColumnName) setNormalizedValue(document.getElementById('dni'), dataExtensionDniColumnName);
+        if (dataExtensionGenderColumnName) setNormalizedValue(document.getElementById('gender'), dataExtensionGenderColumnName);
+        if (dataExtensionTributarioColumnName) setNormalizedValue(document.getElementById('tributario'), dataExtensionTributarioColumnName);
+        if (dataExtensionBsuidColumnName) setNormalizedValue(document.getElementById('bsuid'), dataExtensionBsuidColumnName);
+        if (campaignName) document.getElementById('campaignName').value = campaignName;
+        if (templateId) document.getElementById('templateId').value = templateId;
+
+        if (variablesValue && variablesValue !== 'NO_VARIABLES') {
+            const parsedVariables = deserializeString(variablesValue);
+            console.log('[customActivity] initActivity:parsedVariables', parsedVariables);
+
+            for (const parsedVariable in parsedVariables) {
+                addItem(parsedVariables[parsedVariable].split('.').pop()?.replace('}}', ''));
+            }
+        }
+
+        console.log('[customActivity] initActivity:complete');
+    });
+
+    connection.on('clickedNext', () => {
+        console.log('[customActivity] clickedNext:start');
+
+        const dataExtension = document.getElementById('dataExtension').value;
+        const dataExtensionPhoneNumberColumnName = setNormalizedValue(
+            document.getElementById('dataExtensionPhoneNumberColumnName'),
+            document.getElementById('dataExtensionPhoneNumberColumnName').value,
+        );
+        const dataExtensionDniColumnName = setNormalizedValue(
+            document.getElementById('dni'),
+            document.getElementById('dni').value,
+        );
+        const dataExtensionGenderColumnName = setNormalizedValue(
+            document.getElementById('gender'),
+            document.getElementById('gender').value,
+        );
+        const dataExtensionTributarioColumnName = setNormalizedValue(
+            document.getElementById('tributario'),
+            document.getElementById('tributario').value,
+        );
+        const dataExtensionBsuidColumnName = setNormalizedValue(
+            document.getElementById('bsuid'),
+            document.getElementById('bsuid').value,
+        );
+        const campaignName = document.getElementById('campaignName').value;
+        const templateId = document.getElementById('templateId').value;
+        const phoneNumber = buildContactAttribute(dataExtension, dataExtensionPhoneNumberColumnName);
+        const dni = buildContactAttribute(dataExtension, dataExtensionDniColumnName);
+        const gender = buildContactAttribute(dataExtension, dataExtensionGenderColumnName);
+        const tributario = buildContactAttribute(dataExtension, dataExtensionTributarioColumnName);
+        const bsuid = buildContactAttribute(dataExtension, dataExtensionBsuidColumnName);
+
+        const groupDivs = document.querySelectorAll('.variable-item');
+        const variablesObject = {};
+        for (const groupDiv of groupDivs) {
+            const input = groupDiv.querySelector('input');
+            const variableNumber = groupDiv.id.split('group-')[1];
+            const dataExtensionColumnName = setNormalizedValue(input, input.value);
+            variablesObject[variableNumber] = buildContactAttribute(dataExtension, dataExtensionColumnName);
+        }
+        const variables = groupDivs.length ? serializeObject(variablesObject) : 'NO_VARIABLES';
+
+        console.log('[customActivity] clickedNext:resolvedValues', {
+            dataExtension,
+            dataExtensionPhoneNumberColumnName,
+            dataExtensionDniColumnName,
+            dataExtensionGenderColumnName,
+            dataExtensionTributarioColumnName,
+            dataExtensionBsuidColumnName,
+            campaignName,
+            templateId,
+            phoneNumber,
+            dni,
+            gender,
+            tributario,
+            bsuid,
+            variablesObject,
+            variables
+        });
+
+        activity['arguments'] = activity['arguments'] || {};
+        activity['arguments'].execute = activity['arguments'].execute || {};
+        activity['arguments'].execute.inArguments = [
+            { dataExtension: dataExtension ? dataExtension : null },
+            { dataExtensionPhoneNumberColumnName: dataExtensionPhoneNumberColumnName ? dataExtensionPhoneNumberColumnName : null },
+            { dataExtensionDniColumnName: dataExtensionDniColumnName ? dataExtensionDniColumnName : null },
+            { dataExtensionGenderColumnName: dataExtensionGenderColumnName ? dataExtensionGenderColumnName : null },
+            { dataExtensionTributarioColumnName: dataExtensionTributarioColumnName ? dataExtensionTributarioColumnName : null },
+            { dataExtensionBsuidColumnName: dataExtensionBsuidColumnName ? dataExtensionBsuidColumnName : null },
+            { campaignName: campaignName ? campaignName : null },
+            { templateId: templateId ? templateId : null },
+            { phoneNumber: phoneNumber ? phoneNumber : null },
+            { dni: dni ? dni : null },
+            { gender: gender ? gender : null },
+            { tributario: tributario ? tributario : null },
+            { bsuid: bsuid ? bsuid : null },
+            { variables: variables ? variables : null }
+        ];
+
+        activity['metaData'] = activity['metaData'] || {};
+        activity['metaData'].isConfigured = true;
+
+        console.log('[customActivity] clickedNext:updateActivity', activity);
+        connection.trigger('updateActivity', activity);
+    });
+
+    connection.on('requestedTriggerEventDefinition', (eventDefinitionModel) => {
+        console.log('[customActivity] requestedTriggerEventDefinition', eventDefinitionModel);
+        if (eventDefinitionModel) eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
+    });
+})(window.Postmonger);
+          function serializeObject(obj) {
+    return Object.entries(obj)
+        .map(([key, value]) => `${key}=${value}`)
+        .join(';');
+}
+
+function deserializeString(str) {
+    const result = {};
+    str.split(';').forEach(pair => {
+      const [key, ...rest] = pair.split('=');
+      if (!key) {
+        return;
+      }
+      result[key] = rest.join('=');
+    });
+    return result;
+}
+        </script>
+    
+    
         <div class="main-block">
             <header>
                 <h1>Enviar WhatsApp - Apigee</h1>
@@ -34,23 +395,11 @@
                 <form action="/">
                     <fieldset>
                         <legend>Campaña</legend>
-                        <input
-                            type="text"
-                            name="campaignName"
-                            id="campaignName"
-                            placeholder="Nombre de campaña"
-                            class="text-input"
-                        />
+                        <input type="text" name="campaignName" id="campaignName" placeholder="Nombre de campaña" class="text-input">
                     </fieldset>
                     <fieldset>
                         <legend>Plantilla</legend>
-                        <input
-                            type="text"
-                            name="templateId"
-                            id="templateId"
-                            placeholder="ID de plantilla"
-                            class="text-input"
-                        />
+                        <input type="text" name="templateId" id="templateId" placeholder="ID de plantilla" class="text-input">
                     </fieldset>
                     <fieldset class="grouped-fieldset">
                         <legend>Origen de datos</legend>
@@ -58,78 +407,42 @@
                         <div class="grouped-fields">
                             <div class="grouped-field full-width">
                                 <label for="dataExtension">Data Extension</label>
-                                <input
-                                    type="text"
-                                    name="dataExtension"
-                                    id="dataExtension"
-                                    placeholder="Nombre de Data Extension"
-                                    class="text-input"
-                                />
+                                <input type="text" name="dataExtension" id="dataExtension" placeholder="Nombre de Data Extension" class="text-input">
                             </div>
                             <div class="grouped-field">
                                 <label for="dataExtensionPhoneNumberColumnName">
                                     Columna de teléfono
                                     <span class="type-hint phone-hint">Tipo: Phone(50)</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name="dataExtensionPhoneNumberColumnName"
-                                    id="dataExtensionPhoneNumberColumnName"
-                                    placeholder="Nombre de columna"
-                                    class="text-input column-name-input"
-                                />
+                                <input type="text" name="dataExtensionPhoneNumberColumnName" id="dataExtensionPhoneNumberColumnName" placeholder="Nombre de columna" class="text-input column-name-input">
                             </div>
                             <div class="grouped-field">
                                 <label for="dni">
                                     Columna de DNI
                                     <span class="type-hint text-hint">Tipo: Text(10)</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name="dni"
-                                    id="dni"
-                                    placeholder="Nombre de columna"
-                                    class="text-input column-name-input"
-                                />
+                                <input type="text" name="dni" id="dni" placeholder="Nombre de columna" class="text-input column-name-input">
                             </div>
                             <div class="grouped-field">
                                 <label for="gender">
                                     Columna de género
                                     <span class="type-hint text-hint">Tipo: Text(1)</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name="gender"
-                                    id="gender"
-                                    placeholder="Nombre de columna"
-                                    class="text-input column-name-input"
-                                />
+                                <input type="text" name="gender" id="gender" placeholder="Nombre de columna" class="text-input column-name-input">
                             </div>
                             <div class="grouped-field">
                                 <label for="tributario">
                                     Columna de tributario
                                     <span class="type-hint text-hint">Tipo: Text(13)</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name="tributario"
-                                    id="tributario"
-                                    placeholder="Nombre de columna"
-                                    class="text-input column-name-input"
-                                />
+                                <input type="text" name="tributario" id="tributario" placeholder="Nombre de columna" class="text-input column-name-input">
                             </div>
                             <div class="grouped-field">
                                 <label for="bsuid">
                                     Columna de BSUID
                                     <span class="type-hint text-hint">Tipo: Text(50)</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name="bsuid"
-                                    id="bsuid"
-                                    placeholder="Nombre de columna"
-                                    class="text-input column-name-input"
-                                />
+                                <input type="text" name="bsuid" id="bsuid" placeholder="Nombre de columna" class="text-input column-name-input">
                             </div>
                         </div>
                     </fieldset>
@@ -138,13 +451,13 @@
                         <p class="grouped-note">Las columnas de variables también deben escribirse sin espacios.</p>
                         <div class="buttons-row">
                             <button onclick="addItem('')" type="button">Agregar variable</button>
-                            <button hidden id="button-that-removes-items" onclick="removeLastItem()" type="button">Quitar variable</button>
+                            <button hidden="" id="button-that-removes-items" onclick="removeLastItem()" type="button">Quitar variable</button>
                         </div>
                     </fieldset>
                 </form>
             </main>
         </div>
-    </body>
+    
     <script>
         function normalizeColumnName(value) {
             return (value || '').replace(/\s+/g, '');
@@ -215,4 +528,6 @@
             markColumnNameInput(input);
         }
     </script>
+
+
 </html>
